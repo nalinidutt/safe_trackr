@@ -37,7 +37,7 @@ const handleDirections = useCallback(() => {
           setDirectionsResponse(result);
         } else {
           console.error(`Error fetching directions ${result}`);
-        }
+
       }
     );
   }
@@ -123,7 +123,6 @@ const Home: React.FC = () => {
       <IonContent fullscreen>
         <div className="iphone13">
           <input className="search-bar" type="text" placeholder="Search..." />
-          {
           <div className="map-container">
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
               <GoogleMap
