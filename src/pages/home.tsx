@@ -1,6 +1,9 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { useHistory } from 'react-router';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonModal, IonList, IonItem, IonIcon } from '@ionic/react';
+import { closeCircleOutline } from 'ionicons/icons'; // For the "X" icon
 import './styling/home.css';
 
 const mapContainerStyle = {
@@ -30,7 +33,7 @@ const handleDirections = useCallback(() => {
           setDirectionsResponse(result);
         } else {
           console.error(`Error fetching directions ${result}`);
-        }
+
       }
     );
   }
@@ -53,54 +56,60 @@ function initMap(): void {
     }
   });
 
-  displayRoute(
-    "Perth, WA",
-    "Sydney, NSW",
-    directionsService,
-    directionsRenderer
-  );
-}
+// Function to generate random values
+const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-function displayRoute(
-  origin: string,
-  destination: string,
-  service: google.maps.DirectionsService,
-  display: google.maps.DirectionsRenderer
-) {
-  service
-    .route({
-      origin: origin,
-      destination: destination,
-      waypoints: [
-        { location: "Adelaide, SA" },
-        { location: "Broken Hill, NSW" },
-      ],
-      travelMode: google.maps.TravelMode.WALKING,
-    })
-    .then((result: google.maps.DirectionsResult) => {
-      display.setDirections(result);
-    })
-    .catch((e) => {
-      alert("Could not display directions due to: " + e);
-    });
-}
+const getRandomTime = () => {
+  const hour = getRandomNumber(1, 12);
+  const minutes = getRandomNumber(0, 59).toString().padStart(2, '0');
+  const period = getRandomNumber(0, 1) === 0 ? 'am' : 'pm';
+  return `${hour}:${minutes}${period}`;
+};
 
-function computeTotalDistance(result: google.maps.DirectionsResult) {
-  let total = 0;
-  const myroute = result.routes[0];
-
-  if (!myroute) {
-    return;
-  }
-
-  for (let i = 0; i < myroute.legs.length; i++) {
-    total += myroute.legs[i]!.distance!.value;
-  }
-
-  total = total / 1000;
-}
+const getRandomLocation = () => {
+  const locations = ['Home Park', 'Tech Square', 'Scheller', 'Piedmont Park', 'Tin Drum', 'Klaus Computing', 'College of Computing', 'Clough Commons'];
+  return locations[getRandomNumber(0, locations.length - 1)];
+};
 
 const Home: React.FC = () => {
+  const history = useHistory();
+  
+  const navigateToReportForm = () => {
+    history.push('/report_form');
+  };
+
+  const [people, setPeople] = useState([
+    { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
+    { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
+    { name: 'Diya Kaimal', score: 56, location: 'Tech Square', time: '9:00pm' },
+  ]);
+
+  const [personName, setPersonName] = useState('');
+  const [showInputModal, setShowInputModal] = useState(false);  // Controls the modal visibility
+  const [showSOSModal, setShowSOSModal] = useState(false);  // Controls the SOS modal visibility
+
+  // Function to add a new person with a custom name
+  const addPerson = () => {
+    if (personName.trim()) {
+      const newPerson = {
+        name: personName,
+        score: getRandomNumber(0, 100),
+        location: getRandomLocation(),
+        time: getRandomTime(),
+      };
+      setPeople([...people, newPerson]);
+      setPersonName(''); // Reset input field
+      setShowInputModal(false); // Hide modal after adding person
+    }
+  };
+
+  // Function to get score color based on value
+  const getScoreColor = (score) => {
+    if (score <= 33) return 'red';
+    if (score <= 67) return 'orange';
+    return 'green';
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -111,7 +120,7 @@ const Home: React.FC = () => {
       <IonContent fullscreen>
         <div className="iphone13">
           <input className="search-bar" type="text" placeholder="Search..." />
-          {
+
           <div className="map-container">
             <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
               <GoogleMap
@@ -121,7 +130,15 @@ const Home: React.FC = () => {
               />
             </LoadScript>
           </div>
-          }
+          
+          <IonButton expand="block" onClick={navigateToReportForm}>
+          Report an Event
+          </IonButton>
+        
+          <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
+            SOS
+          </IonButton>
+
           <div className="people-section">
             <div className="people-title">
               People
