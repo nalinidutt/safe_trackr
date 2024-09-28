@@ -186,15 +186,17 @@ const Home: React.FC = () => {
               <IonButton expand="block" onClick={calculateRoute}>
                 Get Route
               </IonButton>
+
+              <IonButton expand="block" onClick={navigateToReportForm}>
+                Report an Event
+              </IonButton>
+            
+              <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
+                SOS
+              </IonButton>
             </div>
             
-            <IonButton expand="block" onClick={navigateToReportForm}>
-            Report an Event
-            </IonButton>
-          
-            <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
-              SOS
-            </IonButton>
+            
 
             <div className="people-section">
               <div className="people-title">
