@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
 import { useHistory } from 'react-router';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonModal, IonList, IonItem, IonIcon } from '@ionic/react';
 import { closeCircleOutline } from 'ionicons/icons'; // For the "X" icon
@@ -17,15 +17,15 @@ const center = {
 
 const Home: React.FC = () => {
   const history = useHistory();
-  const [currentLocation, setCurrentLocation] = useState<google.maps.LatLng | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const currentLatLng = new google.maps.LatLng(latitude, longitude);
-          setCurrentLocation(currentLatLng);
+          setCurrentLocation({ lat: latitude, lng: longitude });
         },
         (error) => {
           console.error('Error getting location', error);
@@ -36,37 +36,31 @@ const Home: React.FC = () => {
     }
   };
 
-  /*
-  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
-
-  const handleDirections = useCallback(() => {
-    if (window.google) {
-      const directionsService = new window.google.maps.DirectionsService();
-      directionsService.route(
-        {
-          origin: 'New York, NY',
-          destination: 'Los Angeles, CA',
-          travelMode: window.google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === window.google.maps.DirectionsStatus.OK) {
-            setDirectionsResponse(result);
-          } else {
-            console.error(`Error fetching directions ${result}`);
-
-        }
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    handleDirections();
-  }, [handleDirections]);
-  */
-
   useEffect(() => {
     getCurrentLocation(); // Fetch the user's current location when the component mounts
   }, []);
+
+  useEffect(() => {
+    if (currentLocation) {
+      console.log("Current location set:", currentLocation); // Log updated location
+    }
+  }, [currentLocation]);
+
+  useEffect(() => {
+    if (currentLocation && map) {
+      console.log("Current location updated:", currentLocation); // Log the updated location
+      const locationLatLng = new google.maps.LatLng(currentLocation.lat, currentLocation.lng);
+      map.setCenter(locationLatLng); // Center the map on the current location
+
+      // Create the AdvancedMarkerElement to show the current location
+      /*
+      new google.maps.marker.AdvancedMarkerElement({
+        position: locationLatLng,
+        map: map,
+      });
+      */
+    }
+  }, [currentLocation, map]);
 
   function initMap(): void {
     const directionsService = new google.maps.DirectionsService();
@@ -194,10 +188,18 @@ const Home: React.FC = () => {
 
             <div className="map-container">
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
-                <GoogleMap
+                  <GoogleMap
                   mapContainerStyle={mapContainerStyle}
-                  center={ currentLocation || center }
-                  zoom={10}
+                  center={ center }
+                  zoom={20}
+                  options={{
+                    zoomControl: true,
+                    mapTypeControl: false,
+                    fullscreenControl: false,
+                  }}
+                  onLoad={(loadedMap) => {
+                    setMap(loadedMap);
+                  }}
                 />
               </LoadScript>
             </div>
