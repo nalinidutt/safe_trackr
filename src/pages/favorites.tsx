@@ -27,49 +27,6 @@ const Favorites: React.FC = () => {
     };
 
     return (
-<<<<<<< HEAD
-      <IonPage>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Home</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent fullscreen>
-          <div className="iphone13">
-            <input className="search-bar" type="text" placeholder="Search..." />
-  
-            <div className="map-container">
-              <LoadScript googleMapsApiKey="YOUR_API_KEY">
-                <GoogleMap
-                  mapContainerStyle={mapContainerStyle}
-                  center={center}
-                  zoom={10}
-                />
-              </LoadScript>
-            </div>
-  
-            <div className="people-section">
-              <div className="people-title">
-                People
-                <IonButton
-                  onClick={() => setShowInput(!showInput)}  // Toggle input visibility
-                  style={{ backgroundColor: 'transparent', color: 'gray', fontSize: '24px', padding: 0, marginLeft: '10px' }}
-                >
-                  +
-                </IonButton>
-              </div>
-              <hr />
-              {showInput && (
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                  <IonInput
-                    value={personName}
-                    placeholder="Enter person name"
-                    onIonChange={(e) => setPersonName(e.detail.value!)}
-                    style={{ marginRight: '10px', padding: '5px', border: '1px solid gray', borderRadius: '5px' }}
-                  />
-                  <IonButton onClick={addPerson}>Add</IonButton>
-=======
->>>>>>> master
         <IonPage>
             <IonHeader>
                 <IonToolbar>
