@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, useJsApiLoader, MarkerF, InfoWindowF } from '@react-google-maps/api';
 import { useHistory } from 'react-router';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonModal, IonList, IonItem, IonIcon } from '@ionic/react';
 import { closeCircleOutline } from 'ionicons/icons'; // For the "X" icon
 import './styling/home.css';
+import  ReportForm from './report';
+import axios from 'axios';
 
 const mapContainerStyle = {
   width: '100%',
@@ -21,6 +23,28 @@ const Home: React.FC = () => {
   const [destination, setDestination] = useState<string>('');
   const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [selectedCrime, setSelectedCrime] = useState<{ lat: number; long: number; crimeType: string; description: string } | null>(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
+  const [crimes, setCrimes] = useState<Array<{ location: { lat: number; long: number }; crimeType: string; description: string }>>([]);
+
+
+  const fetchCrimes = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/reports'); 
+      setCrimes(response.data); 
+    } catch (error) {
+      console.error('Error fetching crimes:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCrimes(); 
+  }, []);
+
   
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -169,6 +193,31 @@ const Home: React.FC = () => {
                   }}
                   onLoad={(loadedMap) => setMap(loadedMap)}
                 >
+                {crimes.map((crime, index) => (
+                  <MarkerF
+                    key={index}
+                    position={{ lat: crime.location.lat, lng: crime.location.long }}
+                    icon = '\media\yellow_MarkerA.png'
+                    onMouseOver={() => {
+                      const hoverTimeout = setTimeout(() => {
+                      setSelectedCrime({ lat: crime.location.lat, long: crime.location.long, crimeType: crime.crimeType, description: crime.description });
+                      }, 100);
+                      return () => clearTimeout(hoverTimeout);
+                    }}
+                    onMouseOut={() => setSelectedCrime(null)}
+                  />
+                  ))}
+                  {selectedCrime && (
+                  <InfoWindowF
+                    position={{ lat: selectedCrime.lat, lng: selectedCrime.long }}
+                    onCloseClick={() => setSelectedCrime(null)}
+                   >
+                    <div>
+                      <h4>{selectedCrime.crimeType}</h4>
+                      <p>{selectedCrime.description}</p>
+                    </div>
+                  </InfoWindowF>
+                )}
                   {directionsResponse && (
                     <DirectionsRenderer directions={directionsResponse} />
                   )}
@@ -186,16 +235,14 @@ const Home: React.FC = () => {
               <IonButton expand="block" onClick={calculateRoute}>
                 Get Route
               </IonButton>
-
-              <IonButton expand="block" onClick={navigateToReportForm}>
-                Report an Event
-              </IonButton>
             
               <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
                 SOS
               </IonButton>
             </div>
-            
+            <IonButton expand="full" onClick={openModal}>Report a Crime</IonButton>
+        
+            <ReportForm isOpen={isModalOpen} onClose={closeModal} />
             
 
             <div className="people-section">
