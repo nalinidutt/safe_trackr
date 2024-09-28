@@ -14,8 +14,8 @@ const mapContainerStyle = {
 };
 
 const center = {
-  lat: 84.3885,  // Latitude
-  lng: 33.7501  // Longitude
+  lat: 33.7501,  // Latitude
+  lng: -84.3885  // Longitude
 };
 
 const Home: React.FC = () => {
@@ -101,19 +101,19 @@ const Home: React.FC = () => {
 
         <div className="iphone13">
           <input className="search-bar" type="text" placeholder="Search..." />
-
+          {
           <div className="map-container">
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
                 zoom={10}
-              >
+                >
                 {/* Add any markers or other components here */}
               </GoogleMap>
             </LoadScript>
           </div>
-
+          }
           <div className="people-section">
             <div className="people-title">People</div>
             <hr />
