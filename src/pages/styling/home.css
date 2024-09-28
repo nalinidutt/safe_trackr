@@ -30,7 +30,6 @@
 
   .people-section {
     padding: 10px;
-    background: #f8f8f8; /* Light gray background */
     border-top: 1px solid #ccc;
     height: 25%; /* Set fixed height for scrollable area */
     flex-shrink: 0;
@@ -61,7 +60,7 @@
     flex-direction: column;
   }
 
-  .person-name {
+  .person-name h4 {
     font-weight: bold;
   }
 
