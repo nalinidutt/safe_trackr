@@ -79,7 +79,7 @@ const ReportForm: React.FC = () => {
               <IonSelectOption value="Robbery">Robbery</IonSelectOption>
               <IonSelectOption value="Intimidation">Intimidation</IonSelectOption>
               <IonSelectOption value="Murder">Murder</IonSelectOption>
-              <IonSelectOption value="Prostitution">Murder</IonSelectOption>
+              <IonSelectOption value="Prostitution">Prostitution</IonSelectOption>
               <IonSelectOption value="Kidnapping">Kidnapping</IonSelectOption>
               <IonSelectOption value="Pick-pocketing">Pick-pocketing</IonSelectOption>
               <IonSelectOption value="Human Trafficking">Human Trafficking</IonSelectOption>
