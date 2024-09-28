@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
 import { useHistory } from 'react-router';
 import {
   IonContent,
@@ -37,7 +37,10 @@ interface Person {
 
 const Home: React.FC = () => {
   const history = useHistory();
-  const [currentLocation, setCurrentLocation] = useState<google.maps.LatLng | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [destination, setDestination] = useState<string>('');
+  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   const [people, setPeople] = useState<Person[]>([
     { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
     { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
@@ -56,8 +59,7 @@ const Home: React.FC = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const currentLatLng = new google.maps.LatLng(latitude, longitude);
-          setCurrentLocation(currentLatLng);
+          setCurrentLocation({ lat: latitude, lng: longitude });
         },
         (error) => {
           console.error('Error getting location', error);
@@ -68,6 +70,63 @@ const Home: React.FC = () => {
     }
   };
 
+  const calculateRoute = () => {
+    if (!currentLocation || !destination) {
+      alert("Please enter a destination.");
+      return;
+    }
+
+    const directionsService = new google.maps.DirectionsService();
+    directionsService.route(
+      {
+        origin: new google.maps.LatLng(currentLocation.lat, currentLocation.lng),
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING, // You can change this to WALKING, BICYCLING, etc.
+        waypoints: [
+          { location: new google.maps.LatLng(33.77297392970823, -84.39517238971182) },
+          { location: new google.maps.LatLng(33.773865756089805, -84.39481833813646) },
+        ],
+        optimizeWaypoints: true,
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          setDirectionsResponse(result);
+        } else {
+          alert('Could not calculate route: ' + status);
+        }
+      }
+    );
+  };
+
+  useEffect(() => {
+    getCurrentLocation(); // Fetch the user's current location when the component mounts
+  }, []);
+
+  useEffect(() => {
+    if (currentLocation) {
+      console.log("Current location set:", currentLocation); // Log updated location
+    }
+  }, [currentLocation]);
+
+  useEffect(() => {
+    if (currentLocation && map) {
+      console.log("Current location updated:", currentLocation); // Log the updated location
+      const locationLatLng = new google.maps.LatLng(currentLocation.lat, currentLocation.lng);
+      map.setCenter(locationLatLng); // Center the map on the current location
+
+      // Create the AdvancedMarkerElement to show the current location
+      /*
+      new google.maps.marker.AdvancedMarkerElement({
+        position: locationLatLng,
+        map: map,
+      });
+      */
+    }
+  }, [currentLocation, map]);
+
+
+  // Function to generate random values
+  const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
   const addPerson = () => {
     if (personName.trim()) {
       const newPerson: Person = {
@@ -118,113 +177,94 @@ const Home: React.FC = () => {
         <div className="iphone13">
           <input className="search-bar" type="text" placeholder="Search..." />
 
-          <div className="map-container">
-            <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
-              <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={currentLocation || center}
-                zoom={10}
+            <div className="map-container">
+              <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
+                  <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={ center }
+                  zoom={20}
+                  options={{
+                    zoomControl: true,
+                    mapTypeControl: false,
+                    fullscreenControl: false,
+                  }}
+                  onLoad={(loadedMap) => setMap(loadedMap)}
+                >
+                  {directionsResponse && (
+                    <DirectionsRenderer directions={directionsResponse} />
+                  )}
+                </GoogleMap>
+              </LoadScript>
+            </div>
+
+            <div className="controls">
+              <IonInput
+                placeholder="Enter destination"
+                value={destination}
+                onIonChange={(e) => setDestination(e.detail.value!)}
+                clearInput
               />
-            </LoadScript>
-          </div>
+              <IonButton expand="block" onClick={calculateRoute}>
+                Get Route
+              </IonButton>
 
-          {/* Flex container for buttons, moved up slightly */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 0', marginTop: '-20px' }}>
-            <IonButton expand="full" onClick={navigateToReportForm} style={{ flex: 1, marginRight: '5px' }}>
-              Report an Event
-            </IonButton>
+              <IonButton expand="block" onClick={navigateToReportForm}>
+                Report an Event
+              </IonButton>
+            
+              <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
+                SOS
+              </IonButton>
+            </div>
+            
+            
 
-            <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ flex: 1, marginLeft: '5px' }}>
-              SOS
-            </IonButton>
-          </div>
+            <div className="people-section">
+              <div className="people-title">
+                People
+                <IonButton
+                  onClick={() => setShowInputModal(true)}  // Open name input modal
+                  style={{ backgroundColor: 'transparent', color: 'gray', fontSize: '20px', padding: 0, marginLeft: 'auto' }} // Style for the "+" button
+                >
+                  +
+                </IonButton>
+              </div>
+              <hr />
+              {people.map((person, index) => (
+                <div className="person-row" key={index}>
+                  <div className="profile-pic"></div>
+                  <div className="person-info">
+                    <div className="person-name">{person.name}</div>
+                    <div className="person-details">
+                      Safety Score:
+                      <span style={{ color: getScoreColor(person.score) }}> {person.score}</span>
+                      | Last Location: {person.location}
+                      | Last Marked: {person.time}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-          {/* Adjusting the People Section position */}
-          <PeopleSection people={people} getScoreColor={getScoreColor} setShowInputModal={setShowInputModal} />
-
-          <NameInputModal
-            isOpen={showInputModal}
-            onClose={() => setShowInputModal(false)}
-            personName={personName}
-            setPersonName={setPersonName}
-            addPerson={addPerson}
-          />
-
-          <SOSModal isOpen={showSOSModal} onClose={() => setShowSOSModal(false)} />
-        </div>
-      </IonContent>
-    </IonPage>
-  );
-};
-
-const PeopleSection: React.FC<{ people: Person[]; getScoreColor: (score: number) => string; setShowInputModal: (show: boolean) => void; }> = ({ people, getScoreColor, setShowInputModal }) => (
-  <div className="people-section">
-    <div className="people-title">
-      People
-      <IonButton
-        onClick={() => setShowInputModal(true)}
-        style={{
-          backgroundColor: 'white', // Set background to white
-          color: 'gray',
-          fontSize: '20px',
-          padding: 0,
-          marginLeft: 'auto',
-          border: '1px solid gray', // Optional: add a border for better visibility
-        }}
-      >
-        +
-      </IonButton>
-    </div>
-    <hr />
-    {people.map((person, index) => (
-      <div className="person-row" key={index}>
-        <div className="profile-pic"></div>
-        <div className="person-info">
-          <div className="person-name">{person.name}</div>
-          <div className="person-details">
-            Safety Score:
-            <span style={{ color: getScoreColor(person.score) }}> {person.score}</span>
-            | Last Location: {person.location}
-            | Last Marked: {person.time}
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-const NameInputModal: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-  personName: string;
-  setPersonName: (name: string) => void;
-  addPerson: () => void;
-}> = ({ isOpen, onClose, personName, setPersonName, addPerson }) => (
-  <IonModal isOpen={isOpen} onDidDismiss={onClose} className='confirmation-overlay'>
-    <IonContent className='confirmation-box'>
-      <IonToolbar>
-        <IonTitle>Add Person</IonTitle>
-        <IonButton slot="end" onClick={onClose} fill="clear">
-          <IonIcon icon={closeCircleOutline} />
-        </IonButton>
-      </IonToolbar>
-      <div style={{ marginBottom: '10px', padding: '20px' }}>
-        <IonInput
-          value={personName}
-          placeholder="Enter name"
-          onIonChange={(e) => setPersonName(e.detail.value!)}
-          style={{
-            padding: '10px',
-            border: '1px solid gray',
-            borderRadius: '5px',
-            width: '100%',
-          }}
-        />
-      </div>
-      <IonButton expand="block" onClick={addPerson}>Add</IonButton>
-    </IonContent>
-  </IonModal>
-);
+            {/* Name Input Modal */}
+            <IonModal isOpen={showInputModal} onDidDismiss={() => setShowInputModal(false)} className='small-modal'>
+              <IonContent>
+                <div style={{ padding: '10px', textAlign: 'center' }}>
+                  <IonIcon
+                    icon={closeCircleOutline}
+                    style={{ fontSize: '30px', cursor: 'pointer', position: 'absolute', top: '10px', right: '10px' }}
+                    onClick={() => setShowInputModal(false)}  // Close the modal
+                  />
+                  <IonInput
+                    value={personName}
+                    placeholder="Enter name"
+                    onIonChange={(e) => setPersonName(e.detail.value!)}
+                    style={{ marginBottom: '10px', padding: '5px', border: '1px solid gray', borderRadius: '5px', width: '80%' }}
+                  />
+                  <IonButton onClick={addPerson} size="small">Add</IonButton>
+                </div>
+              </IonContent>
+            </IonModal>
 
 const SOSModal: React.FC<{ isOpen: boolean; onClose: () => void; }> = ({ isOpen, onClose }) => (
   <IonModal isOpen={isOpen} onDidDismiss={onClose}>
