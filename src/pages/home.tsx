@@ -15,8 +15,8 @@ const mapContainerStyle = {
 };
 
 const center = {
-  lat: 40.748817,  // Latitude
-  lng: -73.985428  // Longitude
+  lat: 33.7501,  // Latitude
+  lng: 84.3885  // Longitude
 };
 
 const Home: React.FC = () => {

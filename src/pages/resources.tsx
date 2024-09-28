@@ -1,7 +1,17 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonItem, IonLabel, IonInput, IonButton } from '@ionic/react';
-import React from 'react';
+import React, { useState } from 'react';
 
 const Resources: React.FC = () => {
+  const [showMessage, setShowMessage] = useState(false); // State for controlling the confirmation box
+
+  const handleSubmit = () => {
+    setShowMessage(true); // Show the confirmation box on submit
+  };
+
+  const handleClose = () => {
+    setShowMessage(false); // Hide the confirmation box when the X button is clicked
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -12,14 +22,13 @@ const Resources: React.FC = () => {
       <IonContent fullscreen>
         {/* Inline CSS */}
         <style>{`
-          /* Wrapper to simulate the iPhone 13 screen on a laptop */
           .iphone-wrapper {
-            width: 390px; /* iPhone 13 width */
-            height: 844px; /* iPhone 13 height */
-            border: 1px solid #ccc; /* Optional border for visibility */
+            width: 390px;
+            height: 844px;
+            border: 1px solid #ccc;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 30px; /* Rounded corners like an iPhone */
-            margin: 50px auto; /* Center it horizontally and add spacing at the top */
+            border-radius: 30px;
+            margin: 50px auto;
             overflow: hidden;
           }
 
@@ -28,21 +37,13 @@ const Resources: React.FC = () => {
             font-size: 16px;
           }
 
-          .section-title {
-            font-size: 24px;
-            margin-bottom: 12px;
-            text-align: center;
-            color: #333;
-          }
-
-          /* Add blue background to section headers */
           .blue-background {
-            background-color: #3F7C85; /* Blue background */
-            color: white; /* White text on top of blue */
-            padding: 10px 15px; /* Padding inside the blue background */
-            border-radius: 5px; /* Optional: rounding corners */
-            text-align: center; /* Center the text */
-            margin-bottom: 12px; /* Space between the header and the content */
+            background-color: #3F7C85;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 12px;
             font-size: 20px;
           }
 
@@ -65,49 +66,101 @@ const Resources: React.FC = () => {
             text-decoration: underline;
           }
 
-          /* Resources title styling */
           .resources-title {
-            margin-top: 40px; /* Move down the title */
+            margin-top: 30px;
             font-size: 24px;
             text-align: center;
           }
 
-          /* Feedback Section */
-          .ion-item {
-            margin: 20px 0;
+          .feedback-title {
+            margin-top: 40px;
+            font-size: 24px;
+            text-align: center;
           }
 
-          /* Make the input field larger */
           ion-input {
-            height: 100px; /* Increase the height of the input field */
-            font-size: 16px; /* Adjust the font size */
-            padding: 12px; /* Add padding to the input field */
+            height: 50px;
+            font-size: 16px;
+            padding: 12px;
           }
 
-          /* Move the submit button further down */
           .submit-button {
-            margin-top: 20px; /* Increase margin from the input */
-            width: 100%;
+            background-color: #3F7C85; /* Set background color to #3F7C85 */
+            margin-top: 10px;         /* Add top margin */
+            width: 30%;              /* Make the button take the full width */
+            color: white;             /* Set text color to white for contrast */
+            font-size: 16px;          /* Increase font size */
+            cursor: pointer;          /* Change cursor to pointer on hover */
           }
 
-          /* iPhone 13 size adjustments */
+          .submit-button:hover {
+            background-color: #35696F; /* Darken color on hover */
+          }
+
+          /* Confirmation overlay styles */
+          .confirmation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            z-index: 1000;          /* Make sure it's on top of other elements */
+          }
+
+          /* Confirmation box styles */
+          .confirmation-box {
+            padding: 20px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            position: relative; /* Relative for positioning the close button */
+            width: 80%;        /* Box width */
+            max-width: 400px;  /* Max width for larger screens */
+          }
+
+          /* Close button (X) styles */
+          .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #555;
+          }
+
+          .feedback-label {
+            font-size: 18px; /* Increase font size for the label */
+          }
+
+          .feedback-input {
+            font-size: 18px; /* Increase font size for the input */
+            padding: 12px; /* Optional: Adjust padding if needed */
+          }
+
+          .close-button:hover {
+            color: black;
+          }
+
+          /* Responsive adjustments */
           @media (max-width: 390px) {
             .section {
               padding: 12px;
               font-size: 14px;
             }
 
-            .section-title {
+            .resources-title {
               font-size: 22px;
             }
 
             ul {
               font-size: 13px;
-            }
-
-            .submit-button {
-              padding: 12px;
-              font-size: 16px;
             }
           }
         `}</style>
@@ -115,34 +168,37 @@ const Resources: React.FC = () => {
         <div className="iphone-wrapper">
           <div className="section">
             <h4> </h4>
-            <h4> </h4>
-            <h4> </h4>
-            <h4> </h4>
-            <h4> </h4>
             <h1 className="resources-title">Resources</h1>
 
-            <h2 className="resources-title"> </h2>
             <p className="blue-background">Safety Tips and Guides</p>
             <ul>
               <li><a href="https://www.ncpc.org">National Crime Prevention Council</a>: Offers general safety tips, including personal and travel safety.</li>
-              <li><a href="https://www.travelsafetytips.com">Travel Safety Tips</a>: Tips on safety abroad and domestically.</li>
-              <li><a href="https://www.personalsafetyapps.com">Personal Safety App Recommendations</a>: List of mobile apps that provide personal safety features.</li>
+              <li><a href="https://wwwnc.cdc.gov/travel/page/survival-guide">Travel Safety Tips</a>: Tips on safety abroad and domestically.</li>
+              <li><a href="https://www.bestopicks.com/top-10-personal-safety-apps">Personal Safety App Recommendations</a>: List of mobile apps that provide personal safety features.</li>
             </ul>
 
-            <h2 className="resources-title"> </h2>
             <p className="blue-background">Self-Defense and Personal Safety</p>
             <ul>
-              <li><a href="https://www.nsdi.com">Self-Defense Tips from the National Self Defense Institute</a></li>
+              <li><a href="https://health.usnews.com/health-news/health-wellness/articles/2013/10/16/how-to-practice-self-defense-through-awareness">Self-Defense Tips from U.S. News</a></li>
               <li><a href="https://www.samhsa.gov">Substance Abuse and Mental Health Services Administration</a></li>
             </ul>
-          </div>
 
-            <h2 className="section-title">Feedback</h2>
-            <IonItem>
-              <IonLabel position="floating">How can we improve our platform?</IonLabel>
-              <IonInput placeholder="Enter Feedback Here"></IonInput>
-            </IonItem>
-            <IonButton expand="block" className="submit-button">Submit</IonButton>
+            <p className="blue-background">Feedback</p>
+              <IonLabel className="feedback-label" position="floating">How can we improve our platform?</IonLabel>
+              <IonInput className="feedback-input" placeholder="Enter Feedback Here"></IonInput>
+
+            <IonButton expand="block" className="submit-button" onClick={handleSubmit}>Submit</IonButton>
+
+            {/* Confirmation Overlay and Box */}
+            {showMessage && (
+              <div className="confirmation-overlay">
+                <div className="confirmation-box">
+                  <p>Thank you for your feedback.</p>
+                  <button className="close-button" onClick={handleClose}>X</button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </IonContent>
     </IonPage>
