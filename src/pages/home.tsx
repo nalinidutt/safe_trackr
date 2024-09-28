@@ -21,6 +21,8 @@ const Home: React.FC = () => {
   const [destination, setDestination] = useState<string>('');
   const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [suggestions, setSuggestions] = useState<any[]>([]); // To hold the suggestions
+  const [selectedPlace, setSelectedPlace] = useState<{ lat: number; lng: number } | null>(null);
   
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -39,7 +41,7 @@ const Home: React.FC = () => {
   };
 
   const calculateRoute = () => {
-    if (!currentLocation || !destination) {
+    if (!currentLocation || !selectedPlace) {
       alert("Please enter a destination.");
       return;
     }
@@ -48,8 +50,8 @@ const Home: React.FC = () => {
     directionsService.route(
       {
         origin: new google.maps.LatLng(currentLocation.lat, currentLocation.lng),
-        destination: destination,
-        travelMode: google.maps.TravelMode.DRIVING, // You can change this to WALKING, BICYCLING, etc.
+        destination: new google.maps.LatLng(selectedPlace.lat, selectedPlace.lng),
+        travelMode: google.maps.TravelMode.WALKING, // You can change this to WALKING, BICYCLING, etc.
         waypoints: [
           { location: new google.maps.LatLng(33.77297392970823, -84.39517238971182) },
           { location: new google.maps.LatLng(33.773865756089805, -84.39481833813646) },
@@ -64,6 +66,56 @@ const Home: React.FC = () => {
         }
       }
     );
+  };
+
+  const handleAutocomplete = (input: string) => {
+    if (input.length < 3) {
+      setSuggestions([]);
+      return;
+    }
+  
+    const autocompleteService = new google.maps.places.AutocompleteService();
+    autocompleteService.getPlacePredictions({ input }, (predictions, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+        setSuggestions(predictions);
+      }
+    });
+  };  
+
+  const geocodeAddress = (address: string) => {
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address }, (results, status) => {
+      // Add null checks for results and results[0]
+      if (status === google.maps.GeocoderStatus.OK && results && results[0] && results[0].geometry.location) {
+        const location = results[0].geometry.location;
+        setSelectedPlace({ lat: location.lat(), lng: location.lng() });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  };
+  
+
+  // When a suggestion is selected
+  const handleSelectSuggestion = (placeId: string) => {
+    const placesService = new google.maps.places.PlacesService(document.createElement('div'));
+  
+    placesService.getDetails({ placeId }, (place, status) => {
+      // Check if the status is OK and place is not null
+      if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+        // Check if place has geometry and location
+        if (place.geometry && place.geometry.location) {
+          const { lat, lng } = place.geometry.location;
+          setSelectedPlace({ lat: lat(), lng: lng() });
+          setDestination(place.formatted_address || '');
+          setSuggestions([]); // Clear suggestions after selecting a place
+        } else {
+          console.error("Place geometry or location is not available.");
+        }
+      } else {
+        console.error("Place details could not be retrieved: ", status);
+      }
+    });
   };
 
   useEffect(() => {
@@ -154,10 +206,40 @@ const Home: React.FC = () => {
         </IonHeader>
         <IonContent fullscreen>
           <div className="iphone13">
-            <input className="search-bar" type="text" placeholder="Search..." />
+
+            {/* Places Autocomplete Search */}
+            <div className="search-bar">
+              <IonInput
+                value={destination}
+                onIonChange={(e) => {
+                  setDestination(e.detail.value!);
+                  handleAutocomplete(e.detail.value!);
+                }}
+                placeholder="Search for a place..."
+                style={{ width: '100%', padding: '10px', marginTop: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+              />
+
+              {/* Render the autocomplete suggestions */}
+              <div className="suggestion-box">
+                {suggestions.map((suggestion) => (
+                  <div
+                    key={suggestion.place_id}
+                    onClick={() => handleSelectSuggestion(suggestion.place_id)}
+                    style={{
+                      padding: '10px',
+                      borderBottom: '1px solid #eee',
+                      cursor: 'pointer',
+                      backgroundColor: '#fff',
+                    }}
+                  >
+                    {suggestion.description}
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div className="map-container">
-              <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
+              <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo" libraries={['places']}>
                   <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={ center }
@@ -178,7 +260,7 @@ const Home: React.FC = () => {
 
             <div className="controls">
               <IonInput
-                placeholder="Enter destination"
+                placeholder="Enter coordinates"
                 value={destination}
                 onIonChange={(e) => setDestination(e.detail.value!)}
                 clearInput

@@ -11,13 +11,35 @@
     overflow-y: auto;
   }
 
+  .suggestion-box {
+    position: absolute;
+    top: 10%; /* Adjust this value to position the box */
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10; /* Ensure it appears above the map */
+    width: 80%; /* Adjust width as needed */
+  }
+
+  .suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
+  }
+
   .search-bar {
     width: calc(100% - 20px);
     padding: 10px;
     margin: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    position: absolute; /* Position it absolutely */
+    position: relative;
     top: 10px; /* Distance from top */
     left: 10px; /* Center it */
   }
@@ -26,6 +48,7 @@
     height: calc(75%); /* 3/4 of the page height minus search bar */
     margin: 60px 10px 0; /* Adjust margins to account for search bar */
     flex: 1;
+    position: relative;
   }
 
   .people-section {
