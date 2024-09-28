@@ -1,5 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonInput, IonButton } from '@ionic/react';
 import React, { useState } from 'react';
+import './styling/favorites.css';
 
 const Favorites: React.FC = () => {
     const [locations, setLocations] = useState<{ name: string; address: string }[]>([]);
@@ -34,78 +35,6 @@ const Favorites: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <style>{`
-                    .iphone-wrapper {
-                        width: 390px;
-                        height: 844px;
-                        border: 1px solid #ccc;
-                        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-                        border-radius: 30px;
-                        margin: 50px auto;
-                        overflow: hidden;
-                    }
-
-                    .section {
-                        padding: 16px;
-                        font-size: 16px;
-                    }
-
-                    .blue-background {
-                        background-color: #3F7C85;
-                        color: white;
-                        padding: 8px; /* Smaller padding */
-                        border-radius: 5px;
-                        text-align: center;
-                        margin-bottom: 12px;
-                        font-size: 18px; /* Smaller font size */
-                    }
-
-                    .locations-container, .contacts-container {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 8px; /* Smaller gap */
-                        max-height: 150px; /* Height for multiple cards to fit */
-                        overflow-y: auto; /* Enable vertical scrolling */
-                        padding-right: 5px; /* Padding for scroll bar */
-                        scrollbar-width: thin; /* For Firefox */
-                    }
-
-                    .locations-container::-webkit-scrollbar,
-                    .contacts-container::-webkit-scrollbar {
-                        width: 8px; /* Width of the scrollbar */
-                    }
-
-                    .locations-container::-webkit-scrollbar-thumb,
-                    .contacts-container::-webkit-scrollbar-thumb {
-                        background-color: #3F7C85; /* Color of the scrollbar thumb */
-                        border-radius: 10px; /* Rounded corners for the scrollbar */
-                    }
-
-                    .location-card, .contact-card {
-                        border: 2px solid #3F7C85; /* Blue border */
-                        border-radius: 5px;
-                        padding: 12px; /* Comfortable padding */
-                        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-                        font-size: 14px; /* Smaller font size */
-                    }
-
-                    ion-input {
-                        margin-bottom: 12px;
-                    }
-
-                    .add-button {
-                        background-color: #3F7C85;
-                        color: white;
-                        margin-bottom: 20px;
-                    }
-
-                    .resources-title {
-                        margin-top: 30px;
-                        font-size: 24px;
-                        text-align: center;
-                    }
-                `}</style>
-
                 <div className="iphone-wrapper">
                     <div className="section">
                         <h1 className="resources-title">Favorites</h1>

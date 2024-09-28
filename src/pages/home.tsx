@@ -1,7 +1,8 @@
 import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import React, { useState } from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import { useHistory } from 'react-router';
+import './styling/home.css';
 
 /*
 import dotenv from 'dotenv';
@@ -15,9 +16,96 @@ const mapContainerStyle = {
 };
 
 const center = {
-  lat: 84.3885,  // Latitude
-  lng: 33.7501  // Longitude
+  lat: 33.7501,  // Latitude
+  lng: -84.3885  // Longitude
 };
+
+/*
+const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
+
+const handleDirections = useCallback(() => {
+  if (window.google) {
+    const directionsService = new window.google.maps.DirectionsService();
+    directionsService.route(
+      {
+        origin: 'New York, NY',
+        destination: 'Los Angeles, CA',
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          setDirectionsResponse(result);
+        } else {
+          console.error(`Error fetching directions ${result}`);
+        }
+      }
+    );
+  }
+}, []);
+
+useEffect(() => {
+  handleDirections();
+}, [handleDirections]);
+*/
+
+function initMap(): void {
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer();
+
+  directionsRenderer.addListener("directions_changed", () => {
+    const directions = directionsRenderer.getDirections();
+
+    if (directions) {
+      computeTotalDistance(directions);
+    }
+  });
+
+  displayRoute(
+    "Perth, WA",
+    "Sydney, NSW",
+    directionsService,
+    directionsRenderer
+  );
+}
+
+function displayRoute(
+  origin: string,
+  destination: string,
+  service: google.maps.DirectionsService,
+  display: google.maps.DirectionsRenderer
+) {
+  service
+    .route({
+      origin: origin,
+      destination: destination,
+      waypoints: [
+        { location: "Adelaide, SA" },
+        { location: "Broken Hill, NSW" },
+      ],
+      travelMode: google.maps.TravelMode.WALKING,
+    })
+    .then((result: google.maps.DirectionsResult) => {
+      display.setDirections(result);
+    })
+    .catch((e) => {
+      alert("Could not display directions due to: " + e);
+    });
+}
+
+function computeTotalDistance(result: google.maps.DirectionsResult) {
+  let total = 0;
+  const myroute = result.routes[0];
+
+  if (!myroute) {
+    return;
+  }
+
+  for (let i = 0; i < myroute.legs.length; i++) {
+    total += myroute.legs[i]!.distance!.value;
+  }
+
+  total = total / 1000;
+}
 
 const Home: React.FC = () => {
   const history = useHistory();
@@ -33,81 +121,9 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <style>{`
-          .iphone13 {
-            width: 390px;  /* iPhone 13 width */
-            height: 844px; /* iPhone 13 height */
-            margin: 0 auto;
-            border: 1px solid #ccc;
-            border-radius: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            position: relative;
-          }
-
-          .search-bar {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            position: absolute; /* Position it absolutely */
-            top: 10px; /* Distance from top */
-            left: 10px; /* Center it */
-          }
-
-          .map-container {
-            height: calc(75% - 50px); /* 3/4 of the page height minus search bar */
-            margin: 60px 10px 0; /* Adjust margins to account for search bar */
-          }
-
-          .people-section {
-            padding: 10px;
-            background: #f8f8f8; /* Light gray background */
-            border-top: 1px solid #ccc;
-            height: 25%; /* Set fixed height for scrollable area */
-            overflow-y: auto; /* Allow vertical scrolling */
-          }
-
-          .people-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-          }
-
-          .person-row {
-            display: flex;
-            align-items: center;
-            margin: 5px 0;
-          }
-
-          .profile-pic {
-            width: 30px;
-            height: 30px;
-            background: #ccc; /* Gray circle for profile picture */
-            border-radius: 50%;
-            margin-right: 10px;
-          }
-
-          .person-info {
-            display: flex;
-            flex-direction: column;
-          }
-
-          .person-name {
-            font-weight: bold;
-          }
-
-          .person-details {
-            font-size: 14px;
-            color: #666;
-          }
-
-        `}</style>
-
         <div className="iphone13">
           <input className="search-bar" type="text" placeholder="Search..." />
-
+          {
           <div className="map-container">
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
               <GoogleMap
@@ -115,7 +131,7 @@ const Home: React.FC = () => {
                 center={center}
                 zoom={10}
               >
-                {/* Add any markers or other components here */}
+                initMap();
               </GoogleMap>
             </LoadScript>
           </div>

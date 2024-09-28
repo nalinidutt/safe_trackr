@@ -81,7 +81,7 @@ def safety_score(lat, long, time):
     near_times = time_check(time, near_crimes)
     safety_points = type_check(near_times)
     safety_score = ((safety_points - min_score) / (max_score - min_score)) * (100 - 0) + 0
-    return safety_score
+    return 100 - safety_score
 
 lat_min, lat_max = 33.6280, 33.8870
 long_min, long_max = -84.5540, -84.2900
