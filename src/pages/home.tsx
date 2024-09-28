@@ -1,21 +1,15 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import React, { useState } from 'react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react'; 
+import React from 'react';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
-
-/*
-import dotenv from 'dotenv';
-const apiKey = process.env.REACT_APP_API_KEY;
-console.log(apiKey);
-*/
 
 const mapContainerStyle = {
   width: '100%',
-  height: '400px'
+  height: '100%', // Full height to ensure it takes up the remaining space
 };
 
 const center = {
   lat: 33.7501,  // Latitude
-  lng: -84.3885  // Longitude
+  lng: 84.3885  // Longitude
 };
 
 const Home: React.FC = () => {
@@ -35,8 +29,9 @@ const Home: React.FC = () => {
             border: 1px solid #ccc;
             border-radius: 30px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            position: relative; /* Use relative positioning */
           }
 
           .search-bar {
@@ -45,21 +40,29 @@ const Home: React.FC = () => {
             margin: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            position: absolute; /* Position it absolutely */
-            top: 10px; /* Distance from top */
-            left: 10px; /* Center it */
+            position: absolute; /* Position search bar at the top */
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2; /* Make sure it's above the map */
+            background-color: white;
           }
 
           .map-container {
-            height: calc(75% - 50px); /* 3/4 of the page height minus search bar */
-            margin: 60px 10px 0; /* Adjust margins to account for search bar */
+            flex-grow: 1;
+            margin: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 60px; /* Add margin to clear the search bar */
+            position: relative;
+            height: calc(100% - 270px); /* Remaining space after search bar and people section */
           }
 
           .people-section {
             padding: 10px;
             background: #f8f8f8; /* Light gray background */
             border-top: 1px solid #ccc;
-            height: 25%; /* Set fixed height for scrollable area */
+            height: 200px; /* Fixed height for the people section */
             overflow-y: auto; /* Allow vertical scrolling */
           }
 
@@ -101,19 +104,19 @@ const Home: React.FC = () => {
 
         <div className="iphone13">
           <input className="search-bar" type="text" placeholder="Search..." />
-          {
+
           <div className="map-container">
-              <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
+            <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
                 zoom={10}
-                >
+              >
                 {/* Add any markers or other components here */}
               </GoogleMap>
             </LoadScript>
           </div>
-          }
+
           <div className="people-section">
             <div className="people-title">People</div>
             <hr />
