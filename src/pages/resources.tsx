@@ -66,12 +66,6 @@ const Resources: React.FC = () => {
             text-decoration: underline;
           }
 
-          .resources-title {
-            margin-top: 30px;
-            font-size: 24px;
-            text-align: center;
-          }
-
           .feedback-title {
             margin-top: 40px;
             font-size: 24px;
@@ -154,11 +148,7 @@ const Resources: React.FC = () => {
               padding: 12px;
               font-size: 14px;
             }
-
-            .resources-title {
-              font-size: 22px;
-            }
-
+              
             ul {
               font-size: 13px;
             }
