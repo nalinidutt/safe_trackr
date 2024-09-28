@@ -67,3 +67,16 @@ ion-input {
     font-size: 24px;
     text-align: center;
 }
+
+.custom-input {
+    border: 1px solid #ccc; /* Gray border */
+    padding: 10px;          /* Padding inside the input */
+    border-radius: 5px;     /* Rounded corners */
+    box-sizing: border-box; /* Ensure padding doesn’t affect the width */
+    width: 100%;            /* Full width of the container */
+  }
+
+  .custom-input:focus {
+    border-color: #888;     /* Darker gray on focus */
+    outline: none;          /* Remove default outline */
+  }
