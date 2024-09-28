@@ -7,6 +7,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     position: relative;
+    flex-direction: column;
+    overflow-y: auto;
   }
 
   .search-bar {
@@ -21,8 +23,9 @@
   }
 
   .map-container {
-    height: calc(75% - 50px); /* 3/4 of the page height minus search bar */
+    height: calc(75%); /* 3/4 of the page height minus search bar */
     margin: 60px 10px 0; /* Adjust margins to account for search bar */
+    flex: 1;
   }
 
   .people-section {
@@ -30,7 +33,7 @@
     background: #f8f8f8; /* Light gray background */
     border-top: 1px solid #ccc;
     height: 25%; /* Set fixed height for scrollable area */
-    overflow-y: auto; /* Allow vertical scrolling */
+    flex-shrink: 0;
   }
 
   .people-title {
@@ -66,3 +69,30 @@
     font-size: 14px;
     color: #666;
   }
+
+  .confirmation-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+  }
+  
+  .confirmation-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+  }  
+
+/* Close button (X) styles */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #555;
+}

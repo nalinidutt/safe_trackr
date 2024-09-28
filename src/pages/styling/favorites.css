@@ -69,7 +69,7 @@ ion-input {
 }
 
 .custom-input {
-    border: 1px solid #ccc; /* Gray border */
+    border: 1px solid #888; /* Gray border */
     padding: 10px;          /* Padding inside the input */
     border-radius: 5px;     /* Rounded corners */
     box-sizing: border-box; /* Ensure padding doesn’t affect the width */

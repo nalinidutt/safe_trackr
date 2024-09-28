@@ -16,20 +16,23 @@ import {
 } from '@ionic/react';
 import './styling/settings.css';
 
-const Settings: React.FC = () => {
+interface SettingsProps {
+  locations: { name: string; address: string }[];
+  addLocation: (name: string, address: string) => void;
+}
+
+const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [locationName, setLocationName] = useState('');
   const [locationAddress, setLocationAddress] = useState('');
-  const [locations, setLocations] = useState<{ name: string; address: string }[]>([]);
+  const [language, setLanguage] = useState('en'); // Default language is English
 
   const handleAddLocation = () => {
-    if (locationName && locationAddress) {
-      setLocations([...locations, { name: locationName, address: locationAddress }]);
-      setLocationName('');
-      setLocationAddress('');
-    }
+    addLocation(locationName, locationAddress);
+    setLocationName('');
+    setLocationAddress('');
   };
 
   const renderModalContent = () => {
@@ -38,19 +41,19 @@ const Settings: React.FC = () => {
         return (
           <div>
             <IonItem>
-              <IonLabel>Maps</IonLabel>
+              <IonLabel>{language === 'es' ? 'Autopistas' : 'Highways'}</IonLabel>
               <IonToggle />
             </IonItem>
             <IonItem>
-              <IonLabel>Tolls</IonLabel>
+              <IonLabel>{language === 'es' ? 'Peajes' : 'Tolls'}</IonLabel>
               <IonToggle />
             </IonItem>
             <IonItem>
-              <IonLabel>Street Light</IonLabel>
+              <IonLabel>{language === 'es' ? 'Farola' : 'Street Light'}</IonLabel>
               <IonToggle />
             </IonItem>
             <IonItem>
-              <IonLabel>Street Traffic</IonLabel>
+              <IonLabel>{language === 'es' ? 'Tráfico' : 'Street Traffic'}</IonLabel>
               <IonToggle />
             </IonItem>
           </div>
@@ -59,7 +62,7 @@ const Settings: React.FC = () => {
         return (
           <div>
             <IonItem>
-              <IonLabel>Dark Mode</IonLabel>
+              <IonLabel>{language === 'es' ? 'Modo Oscuro' : 'Dark Mode'}</IonLabel>
               <IonToggle checked={darkMode} onIonChange={() => setDarkMode(!darkMode)} />
             </IonItem>
           </div>
@@ -67,17 +70,6 @@ const Settings: React.FC = () => {
       case 'Saved Locations':
         return (
           <div>
-            <IonInput
-              value={locationName}
-              placeholder="Location Name"
-              onIonChange={(e) => setLocationName(e.detail.value!)}
-            />
-            <IonInput
-              value={locationAddress}
-              placeholder="Location Address"
-              onIonChange={(e) => setLocationAddress(e.detail.value!)}
-            />
-            <IonButton onClick={handleAddLocation}>Add Location</IonButton>
             <ul>
               {locations.map((loc, index) => (
                 <li key={index}>{`${loc.name}, ${loc.address}`}</li>
@@ -88,23 +80,23 @@ const Settings: React.FC = () => {
       case 'Credentials':
         return (
           <div>
-            <IonLabel>Account Username/Email</IonLabel>
+            <IonLabel>{language === 'es' ? 'Nombre de usuario/correo' : 'Account Username/Email'}</IonLabel>
             <IonInput value="user@example.com" readonly />
-            <IonButton>Change Password</IonButton>
+            <IonButton>{language === 'es' ? 'Cambiar Contraseña' : 'Change Password'}</IonButton>
           </div>
         );
       case 'Privacy':
         return (
           <div>
-            <IonLabel>Share Information</IonLabel>
+            <IonLabel>{language === 'es' ? 'Compartir Información' : 'Share Information'}</IonLabel>
             <IonToggle />
           </div>
         );
       case 'Accessibility & Language':
         return (
           <div>
-            <IonLabel>Choose Language</IonLabel>
-            <IonSelect>
+            <IonLabel>{language === 'es' ? 'Elige Idioma' : 'Choose Language'}</IonLabel>
+            <IonSelect value={language} onIonChange={(e) => setLanguage(e.detail.value)}>
               <IonSelectOption value="en">English</IonSelectOption>
               <IonSelectOption value="es">Spanish</IonSelectOption>
               <IonSelectOption value="fr">French</IonSelectOption>
@@ -114,21 +106,25 @@ const Settings: React.FC = () => {
       case 'Two-Factor Authentication':
         return (
           <div>
-            <IonLabel>Enable Two-Factor Authentication</IonLabel>
+            <IonLabel>{language === 'es' ? 'Habilitar Autenticación de Dos Factores' : 'Enable Two-Factor Authentication'}</IonLabel>
             <IonToggle />
           </div>
         );
       case 'Account Activity':
-        return <IonLabel>Most Recent App Opening: {new Date().toLocaleString()}</IonLabel>;
+        return (
+          <IonLabel>
+            {language === 'es' ? 'Última Apertura de la Aplicación:' : 'Most Recent App Opening:'} {new Date().toLocaleString()}
+          </IonLabel>
+        );
       case 'Subscription & Billing':
         return (
           <div>
-            <IonLabel>Current Plan: Free Plan</IonLabel>
-            <IonLabel>Upcoming Plan: Premium Features (Coming Soon)</IonLabel>
+            <IonLabel>{language === 'es' ? 'Plan Actual: Plan Gratuito' : 'Current Plan: Free Plan'}</IonLabel>
+            <IonLabel>{language === 'es' ? 'Próximo Plan: Funciones Premium (Próximamente)' : 'Upcoming Plan: Premium Features (Coming Soon)'}</IonLabel>
           </div>
         );
       case 'Help & Support':
-        return <IonLabel>Contact Email: kripa.kannan17@gmail.com</IonLabel>;
+        return <IonLabel>{language === 'es' ? 'Correo de Contacto' : 'Contact Email'}: kripa.kannan17@gmail.com</IonLabel>;
       default:
         return null;
     }
@@ -138,50 +134,55 @@ const Settings: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Settings</IonTitle>
+          <IonTitle>{language === 'es' ? 'Configuraciones' : 'Settings'}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
         <div className="iphone-wrapper">
           <div className="section">
-            <h1 className="resources-title">Settings</h1>
+            <h1 className="resources-title">{language === 'es' ? 'Configuraciones' : 'Settings'}</h1>
 
             {/* Navigation Section */}
-            <p className="blue-background">Navigation</p>
+            <p className="blue-background">{language === 'es' ? 'Navegación' : 'Navigation'}</p>
             <IonItem button onClick={() => { setSelectedOption('Preferences'); setModalOpen(true); }}>
-              <IonLabel>Preferences</IonLabel>
+              <IonLabel>{language === 'es' ? 'Preferencias' : 'Preferences'}</IonLabel>
             </IonItem>
             <IonItem button onClick={() => { setSelectedOption('Appearance & Display'); setModalOpen(true); }}>
-              <IonLabel>Appearance & Display</IonLabel>
+              <IonLabel>{language === 'es' ? 'Apariencia y Pantalla' : 'Appearance & Display'}</IonLabel>
             </IonItem>
             <IonItem button onClick={() => { setSelectedOption('Saved Locations'); setModalOpen(true); }}>
-              <IonLabel>Saved Locations</IonLabel>
+              <IonLabel>{language === 'es' ? 'Ubicaciones Guardadas' : 'Saved Locations'}</IonLabel>
             </IonItem>
 
             {/* Account Section */}
-            <p className="blue-background">Account</p>
+            <p className="blue-background">{language === 'es' ? 'Cuenta' : 'Account'}</p>
             <IonItem button onClick={() => { setSelectedOption('Credentials'); setModalOpen(true); }}>
-              <IonLabel>Credentials</IonLabel>
+              <IonLabel>{language === 'es' ? 'Credenciales' : 'Credentials'}</IonLabel>
             </IonItem>
             <IonItem button onClick={() => { setSelectedOption('Privacy'); setModalOpen(true); }}>
-              <IonLabel>Privacy</IonLabel>
+              <IonLabel>{language === 'es' ? 'Privacidad' : 'Privacy'}</IonLabel>
             </IonItem>
             <IonItem button onClick={() => { setSelectedOption('Accessibility & Language'); setModalOpen(true); }}>
-              <IonLabel>Accessibility & Language</IonLabel>
+              <IonLabel>{language === 'es' ? 'Accesibilidad e Idioma' : 'Accessibility & Language'}</IonLabel>
             </IonItem>
             <IonItem button onClick={() => { setSelectedOption('Two-Factor Authentication'); setModalOpen(true); }}>
-              <IonLabel>Two-Factor Authentication</IonLabel>
+              <IonLabel>{language === 'es' ? 'Autenticación de Dos Factores' : 'Two-Factor Authentication'}</IonLabel>
             </IonItem>
             <IonItem button onClick={() => { setSelectedOption('Account Activity'); setModalOpen(true); }}>
-              <IonLabel>Account Activity</IonLabel>
+              <IonLabel>{language === 'es' ? 'Actividad de la Cuenta' : 'Account Activity'}</IonLabel>
             </IonItem>
             <IonItem button onClick={() => { setSelectedOption('Subscription & Billing'); setModalOpen(true); }}>
-              <IonLabel>Subscription & Billing</IonLabel>
+              <IonLabel>{language === 'es' ? 'Suscripción y Facturación' : 'Subscription & Billing'}</IonLabel>
             </IonItem>
             <IonItem button onClick={() => { setSelectedOption('Help & Support'); setModalOpen(true); }}>
-              <IonLabel>Help & Support</IonLabel>
+              <IonLabel>{language === 'es' ? 'Ayuda y Soporte' : 'Help & Support'}</IonLabel>
             </IonItem>
+          </div>
+
+          {/* Buttons at the bottom within the iPhone screen */}
+          <div className="button-container">
+            <IonButton expand="full" className="delete-button">{language === 'es' ? 'Conectar Dispositivos' : 'Connect Devices'}</IonButton>
+            <IonButton expand="full" color="danger" className="delete-button">{language === 'es' ? 'Eliminar Cuenta' : 'Delete Account'}</IonButton>
           </div>
         </div>
 
@@ -189,7 +190,7 @@ const Settings: React.FC = () => {
           <IonHeader>
             <IonToolbar>
               <IonTitle>{selectedOption}</IonTitle>
-              <IonButton slot="end" onClick={() => setModalOpen(false)}>Close</IonButton>
+              <IonButton slot="end" onClick={() => setModalOpen(false)}>{language === 'es' ? 'Cerrar' : 'Close'}</IonButton>
             </IonToolbar>
           </IonHeader>
           <IonContent>
