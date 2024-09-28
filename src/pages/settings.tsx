@@ -14,6 +14,7 @@ import {
   IonSelect,
   IonSelectOption,
 } from '@ionic/react';
+import './styling/settings.css';
 
 const Settings: React.FC = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -141,43 +142,6 @@ const Settings: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {/* Inline CSS for styling the iPhone layout */}
-        <style>{`
-          .iphone-wrapper {
-            width: 390px;
-            height: 844px;
-            border: 1px solid #ccc;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 30px;
-            margin: 50px auto;
-            overflow: hidden;
-            background-color: ${darkMode ? '#1c1c1c' : '#ffffff'};
-          }
-          .section {
-            padding: 16px;
-            font-size: 16px;
-          }
-          .blue-background {
-            background-color: #3F7C85;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-align: center;
-            margin-bottom: 12px;
-            font-size: 20px;
-          }
-          .submit-button {
-            background-color: #3F7C85;
-            margin-top: 10px;
-            width: 30%;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-          }
-          .submit-button:hover {
-            background-color: #35696F;
-          }
-        `}</style>
 
         <div className="iphone-wrapper">
           <div className="section">
