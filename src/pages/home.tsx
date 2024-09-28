@@ -10,7 +10,7 @@ const mapContainerStyle = {
 
 const center = {
   lat: 33.7501,  // Latitude
-  lng: 84.3885  // Longitude
+  lng: -84.3885  // Longitude
 };
 
 /*
@@ -27,7 +27,7 @@ const handleDirections = useCallback(() => {
       },
       (result, status) => {
         if (status === window.google.maps.DirectionsStatus.OK) {
-          setDirectionsResponse(result);
+          setDirectionsResponse(result);s
         } else {
           console.error(`Error fetching directions ${result}`);
         }
