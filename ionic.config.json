@@ -1,0 +1,7 @@
+{
+  "name": "safetrackr",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
