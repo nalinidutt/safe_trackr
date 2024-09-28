@@ -25,7 +25,7 @@ const getRandomTime = () => {
 };
 
 const getRandomLocation = () => {
-  const locations = ['Home Park', 'Tech Square', 'Scheller', 'Piedmont Park', 'Clough Commons'];
+  const locations = ['Home Park', 'Tech Square', 'Scheller', 'Piedmont Park', 'Tin Drum', 'Klaus Computing', 'College of Computing', 'Clough Commons'];
   return locations[getRandomNumber(0, locations.length - 1)];
 };
 
@@ -83,6 +83,10 @@ const Home: React.FC = () => {
             </LoadScript>
           </div>
 
+          <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
+            SOS
+          </IonButton>
+
           <div className="people-section">
             <div className="people-title">
               People
@@ -109,10 +113,6 @@ const Home: React.FC = () => {
               </div>
             ))}
           </div>
-
-          <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
-            SOS
-          </IonButton>
 
           {/* Name Input Modal */}
           <IonModal isOpen={showInputModal} onDidDismiss={() => setShowInputModal(false)} cssClass='small-modal'>
