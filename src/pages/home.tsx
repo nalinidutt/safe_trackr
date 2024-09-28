@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
 import { useHistory } from 'react-router';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonModal, IonList, IonItem, IonIcon } from '@ionic/react';
 import { closeCircleOutline } from 'ionicons/icons'; // For the "X" icon
@@ -17,15 +17,17 @@ const center = {
 
 const Home: React.FC = () => {
   const history = useHistory();
-  const [currentLocation, setCurrentLocation] = useState<google.maps.LatLng | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [destination, setDestination] = useState<string>('');
+  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const currentLatLng = new google.maps.LatLng(latitude, longitude);
-          setCurrentLocation(currentLatLng);
+          setCurrentLocation({ lat: latitude, lng: longitude });
         },
         (error) => {
           console.error('Error getting location', error);
@@ -36,99 +38,61 @@ const Home: React.FC = () => {
     }
   };
 
-  /*
-  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
-
-  const handleDirections = useCallback(() => {
-    if (window.google) {
-      const directionsService = new window.google.maps.DirectionsService();
-      directionsService.route(
-        {
-          origin: 'New York, NY',
-          destination: 'Los Angeles, CA',
-          travelMode: window.google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === window.google.maps.DirectionsStatus.OK) {
-            setDirectionsResponse(result);
-          } else {
-            console.error(`Error fetching directions ${result}`);
-
-        }
-      );
+  const calculateRoute = () => {
+    if (!currentLocation || !destination) {
+      alert("Please enter a destination.");
+      return;
     }
-  }, []);
 
-  useEffect(() => {
-    handleDirections();
-  }, [handleDirections]);
-  */
-
-  useEffect(() => {
-    getCurrentLocation(); // Fetch the user's current location when the component mounts
-  }, []);
-
-  function initMap(): void {
     const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer();
-
-    directionsRenderer.addListener("directions_changed", () => {
-      const directions = directionsRenderer.getDirections();
-
-      if (directions) {
-        computeTotalDistance(directions);
-      }
-    });
-
-    displayRoute(
-      new google.maps.LatLng(33.77077999730102, -84.39188936601316),
-      new google.maps.LatLng(33.77437409297337, -84.39620235793099),
-      directionsService,
-      directionsRenderer
-    );
-  }
-
-  function displayRoute(
-    origin: google.maps.LatLng,
-    destination: google.maps.LatLng,
-    service: google.maps.DirectionsService,
-    display: google.maps.DirectionsRenderer
-  ) {
-    service
-      .route({
-        origin: origin,
+    directionsService.route(
+      {
+        origin: new google.maps.LatLng(currentLocation.lat, currentLocation.lng),
         destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING, // You can change this to WALKING, BICYCLING, etc.
         waypoints: [
           { location: new google.maps.LatLng(33.77297392970823, -84.39517238971182) },
           { location: new google.maps.LatLng(33.773865756089805, -84.39481833813646) },
         ],
         optimizeWaypoints: true,
-        travelMode: google.maps.TravelMode.WALKING,
-      })
-      .then((result: google.maps.DirectionsResult) => {
-        display.setDirections(result);
-      })
-      .catch((e) => {
-        alert("Could not display directions due to: " + e);
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          setDirectionsResponse(result);
+        } else {
+          alert('Could not calculate route: ' + status);
+        }
+      }
+    );
+  };
+
+  useEffect(() => {
+    getCurrentLocation(); // Fetch the user's current location when the component mounts
+  }, []);
+
+  useEffect(() => {
+    if (currentLocation) {
+      console.log("Current location set:", currentLocation); // Log updated location
+    }
+  }, [currentLocation]);
+
+  useEffect(() => {
+    if (currentLocation && map) {
+      console.log("Current location updated:", currentLocation); // Log the updated location
+      const locationLatLng = new google.maps.LatLng(currentLocation.lat, currentLocation.lng);
+      map.setCenter(locationLatLng); // Center the map on the current location
+
+      // Create the AdvancedMarkerElement to show the current location
+      /*
+      new google.maps.marker.AdvancedMarkerElement({
+        position: locationLatLng,
+        map: map,
       });
-  }
-
-  function computeTotalDistance(result: google.maps.DirectionsResult) {
-    let total = 0;
-    const myroute = result.routes[0];
-
-    if (!myroute) {
-      return;
+      */
     }
+  }, [currentLocation, map]);
 
-    for (let i = 0; i < myroute.legs.length; i++) {
-      total += myroute.legs[i]!.distance!.value;
-    }
 
-    total = total / 1000;
-
-    return total;
-  }
   // Function to generate random values
   const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -194,21 +158,45 @@ const Home: React.FC = () => {
 
             <div className="map-container">
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
-                <GoogleMap
+                  <GoogleMap
                   mapContainerStyle={mapContainerStyle}
-                  center={ currentLocation || center }
-                  zoom={10}
-                />
+                  center={ center }
+                  zoom={20}
+                  options={{
+                    zoomControl: true,
+                    mapTypeControl: false,
+                    fullscreenControl: false,
+                  }}
+                  onLoad={(loadedMap) => setMap(loadedMap)}
+                >
+                  {directionsResponse && (
+                    <DirectionsRenderer directions={directionsResponse} />
+                  )}
+                </GoogleMap>
               </LoadScript>
             </div>
+
+            <div className="controls">
+              <IonInput
+                placeholder="Enter destination"
+                value={destination}
+                onIonChange={(e) => setDestination(e.detail.value!)}
+                clearInput
+              />
+              <IonButton expand="block" onClick={calculateRoute}>
+                Get Route
+              </IonButton>
+
+              <IonButton expand="block" onClick={navigateToReportForm}>
+                Report an Event
+              </IonButton>
             
-            <IonButton expand="block" onClick={navigateToReportForm}>
-            Report an Event
-            </IonButton>
-          
-            <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
-              SOS
-            </IonButton>
+              <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
+                SOS
+              </IonButton>
+            </div>
+            
+            
 
             <div className="people-section">
               <div className="people-title">
