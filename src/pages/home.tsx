@@ -1,39 +1,19 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
 import { useHistory } from 'react-router';
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonInput,
-  IonModal,
-  IonList,
-  IonItem,
-  IonIcon,
-} from '@ionic/react';
-import { closeCircleOutline } from 'ionicons/icons';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonModal, IonList, IonItem, IonIcon } from '@ionic/react';
+import { closeCircleOutline } from 'ionicons/icons'; // For the "X" icon
 import './styling/home.css';
 
 const mapContainerStyle = {
   width: '100%',
-  height: '90%',
+  height: '100%', // Full height to ensure it takes up the remaining space
 };
 
 const center = {
-  lat: 33.7501,
-  lng: -84.3885,
+  lat: 33.7501,  // Latitude
+  lng: -84.3885  // Longitude
 };
-
-// Person type definition
-interface Person {
-  name: string;
-  score: number;
-  location: string;
-  time: string;
-}
 
 const Home: React.FC = () => {
   const history = useHistory();
@@ -41,19 +21,7 @@ const Home: React.FC = () => {
   const [destination, setDestination] = useState<string>('');
   const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [people, setPeople] = useState<Person[]>([
-    { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
-    { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
-    { name: 'Diya Kaimal', score: 56, location: 'Tech Square', time: '9:00pm' },
-  ]);
-  const [personName, setPersonName] = useState('');
-  const [showInputModal, setShowInputModal] = useState(false);
-  const [showSOSModal, setShowSOSModal] = useState(false);
-
-  useEffect(() => {
-    getCurrentLocation();
-  }, []);
-
+  
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -127,22 +95,6 @@ const Home: React.FC = () => {
 
   // Function to generate random values
   const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
-  const addPerson = () => {
-    if (personName.trim()) {
-      const newPerson: Person = {
-        name: personName,
-        score: getRandomNumber(0, 100),
-        location: getRandomLocation(),
-        time: getRandomTime(),
-      };
-      setPeople((prevPeople) => [...prevPeople, newPerson]);
-      setPersonName('');
-      setShowInputModal(false);
-    }
-  };
-
-  const getRandomNumber = (min: number, max: number) =>
-    Math.floor(Math.random() * (max - min + 1)) + min;
 
   const getRandomTime = () => {
     const hour = getRandomNumber(1, 12);
@@ -156,26 +108,53 @@ const Home: React.FC = () => {
     return locations[getRandomNumber(0, locations.length - 1)];
   };
 
-  const navigateToReportForm = () => {
-    history.push('/report_form');
-  };
+    
+    const navigateToReportForm = () => {
+      history.push('/report_form');
+    };
 
-  const getScoreColor = (score: number) => {
-    if (score <= 33) return 'red';
-    if (score <= 67) return 'orange';
-    return 'green';
-  };
+    const [people, setPeople] = useState([
+      { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
+      { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
+      { name: 'Diya Kaimal', score: 56, location: 'Tech Square', time: '9:00pm' },
+    ]);
 
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Home</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <div className="iphone13">
-          <input className="search-bar" type="text" placeholder="Search..." />
+    const [personName, setPersonName] = useState('');
+    const [showInputModal, setShowInputModal] = useState(false);  // Controls the modal visibility
+    const [showSOSModal, setShowSOSModal] = useState(false);  // Controls the SOS modal visibility
+
+    // Function to add a new person with a custom name
+    const addPerson = () => {
+      if (personName.trim()) {
+        const newPerson = {
+          name: personName,
+          score: getRandomNumber(0, 100),
+          location: getRandomLocation(),
+          time: getRandomTime(),
+        };
+        setPeople([...people, newPerson]);
+        setPersonName(''); // Reset input field
+        setShowInputModal(false); // Hide modal after adding person
+      }
+    };
+
+    // Function to get score color based on value
+    const getScoreColor = (score: number) => {
+      if (score <= 33) return 'red';
+      if (score <= 67) return 'orange';
+      return 'green';
+    };
+
+    return (
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Home</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent fullscreen>
+          <div className="iphone13">
+            <input className="search-bar" type="text" placeholder="Search..." />
 
             <div className="map-container">
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
@@ -266,24 +245,28 @@ const Home: React.FC = () => {
               </IonContent>
             </IonModal>
 
-const SOSModal: React.FC<{ isOpen: boolean; onClose: () => void; }> = ({ isOpen, onClose }) => (
-  <IonModal isOpen={isOpen} onDidDismiss={onClose}>
-    <IonContent>
-      <h2>Emergency Contacts</h2>
-      <IonList>
-        <IonItem button onClick={() => alert('Calling 911...')}>
-          Call 911
-        </IonItem>
-        <IonItem button onClick={() => alert('Calling Emergency Contact 1...')}>
-          Call Emergency Contact 1
-        </IonItem>
-        <IonItem button onClick={() => alert('Calling Emergency Contact 2...')}>
-          Call Emergency Contact 2
-        </IonItem>
-      </IonList>
-      <IonButton onClick={onClose}>Close</IonButton>
-    </IonContent>
-  </IonModal>
-);
+            {/* SOS Modal */}
+            <IonModal isOpen={showSOSModal} onDidDismiss={() => setShowSOSModal(false)}>
+              <IonContent>
+                <h2>Emergency Contacts</h2>
+                <IonList>
+                  <IonItem button onClick={() => alert('Calling 911...')}>
+                    Call 911
+                  </IonItem>
+                  <IonItem button onClick={() => alert('Calling Emergency Contact 1...')}>
+                    Call Emergency Contact 1
+                  </IonItem>
+                  <IonItem button onClick={() => alert('Calling Emergency Contact 2...')}>
+                    Call Emergency Contact 2
+                  </IonItem>
+                </IonList>
+                <IonButton onClick={() => setShowSOSModal(false)}>Close</IonButton>
+              </IonContent>
+            </IonModal>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  };
 
-export default Home;
+  export default Home;
