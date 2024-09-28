@@ -18,6 +18,8 @@ const center = {
 const Home: React.FC = () => {
   const history = useHistory();
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [destination, setDestination] = useState<string>('');
+  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   
   const getCurrentLocation = () => {
@@ -34,6 +36,34 @@ const Home: React.FC = () => {
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
+  };
+
+  const calculateRoute = () => {
+    if (!currentLocation || !destination) {
+      alert("Please enter a destination.");
+      return;
+    }
+
+    const directionsService = new google.maps.DirectionsService();
+    directionsService.route(
+      {
+        origin: new google.maps.LatLng(currentLocation.lat, currentLocation.lng),
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING, // You can change this to WALKING, BICYCLING, etc.
+        waypoints: [
+          { location: new google.maps.LatLng(33.77297392970823, -84.39517238971182) },
+          { location: new google.maps.LatLng(33.773865756089805, -84.39481833813646) },
+        ],
+        optimizeWaypoints: true,
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          setDirectionsResponse(result);
+        } else {
+          alert('Could not calculate route: ' + status);
+        }
+      }
+    );
   };
 
   useEffect(() => {
@@ -62,67 +92,7 @@ const Home: React.FC = () => {
     }
   }, [currentLocation, map]);
 
-  function initMap(): void {
-    const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer();
 
-    directionsRenderer.addListener("directions_changed", () => {
-      const directions = directionsRenderer.getDirections();
-
-      if (directions) {
-        computeTotalDistance(directions);
-      }
-    });
-
-    displayRoute(
-      new google.maps.LatLng(33.77077999730102, -84.39188936601316),
-      new google.maps.LatLng(33.77437409297337, -84.39620235793099),
-      directionsService,
-      directionsRenderer
-    );
-  }
-
-  function displayRoute(
-    origin: google.maps.LatLng,
-    destination: google.maps.LatLng,
-    service: google.maps.DirectionsService,
-    display: google.maps.DirectionsRenderer
-  ) {
-    service
-      .route({
-        origin: origin,
-        destination: destination,
-        waypoints: [
-          { location: new google.maps.LatLng(33.77297392970823, -84.39517238971182) },
-          { location: new google.maps.LatLng(33.773865756089805, -84.39481833813646) },
-        ],
-        optimizeWaypoints: true,
-        travelMode: google.maps.TravelMode.WALKING,
-      })
-      .then((result: google.maps.DirectionsResult) => {
-        display.setDirections(result);
-      })
-      .catch((e) => {
-        alert("Could not display directions due to: " + e);
-      });
-  }
-
-  function computeTotalDistance(result: google.maps.DirectionsResult) {
-    let total = 0;
-    const myroute = result.routes[0];
-
-    if (!myroute) {
-      return;
-    }
-
-    for (let i = 0; i < myroute.legs.length; i++) {
-      total += myroute.legs[i]!.distance!.value;
-    }
-
-    total = total / 1000;
-
-    return total;
-  }
   // Function to generate random values
   const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -197,11 +167,25 @@ const Home: React.FC = () => {
                     mapTypeControl: false,
                     fullscreenControl: false,
                   }}
-                  onLoad={(loadedMap) => {
-                    setMap(loadedMap);
-                  }}
-                />
+                  onLoad={(loadedMap) => setMap(loadedMap)}
+                >
+                  {directionsResponse && (
+                    <DirectionsRenderer directions={directionsResponse} />
+                  )}
+                </GoogleMap>
               </LoadScript>
+            </div>
+
+            <div className="controls">
+              <IonInput
+                placeholder="Enter destination"
+                value={destination}
+                onIonChange={(e) => setDestination(e.detail.value!)}
+                clearInput
+              />
+              <IonButton expand="block" onClick={calculateRoute}>
+                Get Route
+              </IonButton>
             </div>
             
             <IonButton expand="block" onClick={navigateToReportForm}>
