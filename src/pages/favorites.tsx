@@ -40,11 +40,13 @@ const Favorites: React.FC = () => {
                         <h1 className="resources-title">Favorites</h1>
                         <h2 className="blue-background">Saved Locations</h2>
                         <IonInput
+                            className="custom-input"
                             placeholder="Location Name"
                             value={locationName}
                             onIonChange={(e) => setLocationName(e.detail.value!)}
                         />
                         <IonInput
+                            className="custom-input"
                             placeholder="Address, City, State, Zip Code"
                             value={locationAddress}
                             onIonChange={(e) => setLocationAddress(e.detail.value!)}
@@ -61,11 +63,13 @@ const Favorites: React.FC = () => {
 
                         <h2 className="blue-background">Emergency Contacts</h2>
                         <IonInput
+                            className="custom-input"
                             placeholder="Contact Name"
                             value={contactName}
                             onIonChange={(e) => setContactName(e.detail.value!)}
                         />
                         <IonInput
+                            className="custom-input"
                             placeholder="Phone Number"
                             value={contactPhone}
                             onIonChange={(e) => setContactPhone(e.detail.value!)}
