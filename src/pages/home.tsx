@@ -203,7 +203,7 @@ const Home: React.FC = () => {
                 People
                 <IonButton
                   onClick={() => setShowInputModal(true)}  // Open name input modal
-                  style={{ backgroundColor: 'transparent', color: 'gray', fontSize: '20px', padding: 0, marginLeft: 'auto' }} // Style for the "+" button
+                  style={{ backgroundColor: 'transparent', color: 'white', fontSize: '20px', padding: 0, marginLeft: 'auto' }} // Style for the "+" button
                 >
                   +
                 </IonButton>
@@ -213,7 +213,7 @@ const Home: React.FC = () => {
                 <div className="person-row" key={index}>
                   <div className="profile-pic"></div>
                   <div className="person-info">
-                    <div className="person-name">{person.name}</div>
+                    <div className="person-name"><h4>{person.name}</h4></div>
                     <div className="person-details">
                       Safety Score:
                       <span style={{ color: getScoreColor(person.score) }}> {person.score}</span>
