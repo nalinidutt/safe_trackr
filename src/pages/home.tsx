@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import React, { useState } from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import './styling/home.css';
 
 /*
@@ -18,6 +18,93 @@ const center = {
   lat: 33.7501,  // Latitude
   lng: -84.3885  // Longitude
 };
+
+/*
+const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
+
+const handleDirections = useCallback(() => {
+  if (window.google) {
+    const directionsService = new window.google.maps.DirectionsService();
+    directionsService.route(
+      {
+        origin: 'New York, NY',
+        destination: 'Los Angeles, CA',
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          setDirectionsResponse(result);
+        } else {
+          console.error(`Error fetching directions ${result}`);
+        }
+      }
+    );
+  }
+}, []);
+
+useEffect(() => {
+  handleDirections();
+}, [handleDirections]);
+*/
+
+function initMap(): void {
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer();
+
+  directionsRenderer.addListener("directions_changed", () => {
+    const directions = directionsRenderer.getDirections();
+
+    if (directions) {
+      computeTotalDistance(directions);
+    }
+  });
+
+  displayRoute(
+    "Perth, WA",
+    "Sydney, NSW",
+    directionsService,
+    directionsRenderer
+  );
+}
+
+function displayRoute(
+  origin: string,
+  destination: string,
+  service: google.maps.DirectionsService,
+  display: google.maps.DirectionsRenderer
+) {
+  service
+    .route({
+      origin: origin,
+      destination: destination,
+      waypoints: [
+        { location: "Adelaide, SA" },
+        { location: "Broken Hill, NSW" },
+      ],
+      travelMode: google.maps.TravelMode.WALKING,
+    })
+    .then((result: google.maps.DirectionsResult) => {
+      display.setDirections(result);
+    })
+    .catch((e) => {
+      alert("Could not display directions due to: " + e);
+    });
+}
+
+function computeTotalDistance(result: google.maps.DirectionsResult) {
+  let total = 0;
+  const myroute = result.routes[0];
+
+  if (!myroute) {
+    return;
+  }
+
+  for (let i = 0; i < myroute.legs.length; i++) {
+    total += myroute.legs[i]!.distance!.value;
+  }
+
+  total = total / 1000;
+}
 
 const Home: React.FC = () => {
   return (
@@ -37,8 +124,8 @@ const Home: React.FC = () => {
                 mapContainerStyle={mapContainerStyle}
                 center={center}
                 zoom={10}
-                >
-                {/* Add any markers or other components here */}
+              >
+                initMap();
               </GoogleMap>
             </LoadScript>
           </div>
