@@ -128,7 +128,7 @@ function computeTotalDistance(result: google.maps.DirectionsResult) {
   return total;
 }
 // Function to generate random values
-const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 const getRandomTime = () => {
   const hour = getRandomNumber(1, 12);
@@ -143,6 +143,7 @@ const getRandomLocation = () => {
 };
 
 const Home: React.FC = () => {
+  const [currentLocation, setCurrentLocation] = useState<google.maps.LatLng | null>(null);
   const history = useHistory();
   
   const navigateToReportForm = () => {
@@ -175,7 +176,7 @@ const Home: React.FC = () => {
   };
 
   // Function to get score color based on value
-  const getScoreColor = (score) => {
+  const getScoreColor = (score: number) => {
     if (score <= 33) return 'red';
     if (score <= 67) return 'orange';
     return 'green';
@@ -238,7 +239,8 @@ const Home: React.FC = () => {
           </div>
 
           {/* Name Input Modal */}
-          <IonModal isOpen={showInputModal} onDidDismiss={() => setShowInputModal(false)} cssClass='small-modal'>
+          {/* Name Input Modal */}
+          <IonModal isOpen={showInputModal} onDidDismiss={() => setShowInputModal(false)}>
             <IonContent>
               <div style={{ padding: '10px', textAlign: 'center' }}>
                 <IonIcon
