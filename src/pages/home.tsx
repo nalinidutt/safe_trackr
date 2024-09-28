@@ -64,7 +64,7 @@ const Home: React.FC = () => {
         <div id='markfield' className='markfield'>Mark Field</div>
         <div id='markfield2' className='markfield2'>Mark Field</div>
         <div>
-          <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
+          <LoadScript googleMapsApiKey="API_KEY">
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               zoom={10}
