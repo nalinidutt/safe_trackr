@@ -3,6 +3,12 @@ import './home.css'; // Assuming you have a separate CSS file for styles
 import React, { useState } from 'react';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
+/*
+import dotenv from 'dotenv';
+const apiKey = process.env.REACT_APP_API_KEY;
+console.log(apiKey);
+*/
+
 const mapContainerStyle = {
   width: '100%',
   height: '400px'
@@ -63,17 +69,18 @@ const Home: React.FC = () => {
         <div id='profile' className='profile'>Profile</div>
         <div id='markfield' className='markfield'>Mark Field</div>
         <div id='markfield2' className='markfield2'>Mark Field</div>
+        {
         <div>
-          <LoadScript googleMapsApiKey="API_KEY">
+          <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               zoom={10}
               center={center}
             >
-              {/* Additional components, markers, etc. */}
             </GoogleMap>
           </LoadScript>
         </div>
+        }
       </IonContent>
     </IonPage>
   );
