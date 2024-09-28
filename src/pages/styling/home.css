@@ -23,7 +23,7 @@
   }
 
   .map-container {
-    height: calc(75%); /* 3/4 of the page height minus search bar */
+    height: calc(60%); /* 3/4 of the page height minus search bar */
     margin: 60px 10px 0; /* Adjust margins to account for search bar */
     flex: 1;
   }
