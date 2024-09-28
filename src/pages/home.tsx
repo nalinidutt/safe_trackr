@@ -1,5 +1,17 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import './home.css'; // Assuming you have a separate CSS file for styles
+import React, { useState } from 'react';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
+
+const mapContainerStyle = {
+  width: '100%',
+  height: '400px'
+};
+
+const center = {
+  lat: 40.748817,  // Latitude
+  lng: -73.985428  // Longitude
+};
 
 const Home: React.FC = () => {
   return (
@@ -51,9 +63,20 @@ const Home: React.FC = () => {
         <div id='profile' className='profile'>Profile</div>
         <div id='markfield' className='markfield'>Mark Field</div>
         <div id='markfield2' className='markfield2'>Mark Field</div>
+        <div>
+          <LoadScript googleMapsApiKey="API_KEY">
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              zoom={10}
+              center={center}
+            >
+              {/* Additional components, markers, etc. */}
+            </GoogleMap>
+          </LoadScript>
+        </div>
       </IonContent>
     </IonPage>
   );
 };
 
-export default home;
+export default Home;
