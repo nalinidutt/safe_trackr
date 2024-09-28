@@ -14,6 +14,7 @@ import { ellipse, square, triangle } from 'ionicons/icons';
 import Home from './pages/home';
 import Favorites from './pages/favorites';
 import Resources from './pages/resources';
+import Settings from './pages/settings';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -61,6 +62,9 @@ const App: React.FC = () => (
           <Route exact path="/resources">
             <Resources />
           </Route>
+          <Route exact path="/settings">
+            <Settings />
+          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="home" href="/home">
@@ -74,6 +78,10 @@ const App: React.FC = () => (
           <IonTabButton tab="resources" href="/resources">
             <IonIcon aria-hidden="true" icon={square} />
             <IonLabel>Resources</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="settings" href="/settings">
+            <IonIcon aria-hidden="true" icon={square} />
+            <IonLabel>Settings</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
