@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonLabel, IonItem } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonLabel, IonSelect, IonSelectOption, IonItem } from '@ionic/react';
 import axios from 'axios';
 
 const ReportForm: React.FC = () => {
   const [location, setLocation] = useState({ lat: '', long: '' });
-  const [crimeType, setCrimeType] = useState('');
+  const [selectedCrime, setSelectedCrime] = useState<string>('');
   const [description, setDescription] = useState('');
 
   useEffect(() => {
@@ -28,11 +28,12 @@ const ReportForm: React.FC = () => {
   
   
   const handleSubmit = async (e: React.FormEvent) => {
+    alert(`Crime Type: ${selectedCrime}`);
     e.preventDefault();
 
     const reportData = {
       location,
-      crimeType,
+      selectedCrime,
       description,
     };
 
@@ -65,18 +66,31 @@ const ReportForm: React.FC = () => {
             />
           </IonItem>
           <IonItem>
+            <IonSelect
+              value={selectedCrime}
+              placeholder="Select Crime Type"
+              onIonChange={(e) => setSelectedCrime(e.detail.value!)} // Update selected crime type
+            >
+              <IonSelectOption value="Drug/Narcotics">Drug/Narcotics</IonSelectOption>
+              <IonSelectOption value="Property Destruction">Property Destruction</IonSelectOption>
+              <IonSelectOption value="Theft">Theft</IonSelectOption>
+              <IonSelectOption value="Shoplifting">Shoplifting</IonSelectOption>
+              <IonSelectOption value="Assault">Assault</IonSelectOption>
+              <IonSelectOption value="Robbery">Robbery</IonSelectOption>
+              <IonSelectOption value="Intimidation">Intimidation</IonSelectOption>
+              <IonSelectOption value="Murder">Murder</IonSelectOption>
+              <IonSelectOption value="Prostitution">Murder</IonSelectOption>
+              <IonSelectOption value="Kidnapping">Kidnapping</IonSelectOption>
+              <IonSelectOption value="Pick-pocketing">Pick-pocketing</IonSelectOption>
+              <IonSelectOption value="Human Trafficking">Human Trafficking</IonSelectOption>
+              <IonSelectOption value="Other">Other</IonSelectOption>
+            </IonSelect>
+          </IonItem>
+          <IonItem>
             <IonLabel position="floating">Longitude</IonLabel>
             <IonInput
               value={location.long}
               onIonChange={(e) => setLocation({ ...location, long: e.detail.value! })}
-              required
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="floating">Crime Type</IonLabel>
-            <IonInput
-              value={crimeType}
-              onIonChange={(e) => setCrimeType(e.detail.value!)}
               required
             />
           </IonItem>
