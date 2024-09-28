@@ -97,8 +97,170 @@ const Home: React.FC = () => {
     return locations[getRandomNumber(0, locations.length - 1)];
   };
 
+<<<<<<< HEAD
   const navigateToReportForm = () => {
     history.push('/report_form');
+=======
+    
+    const navigateToReportForm = () => {
+      history.push('/report_form');
+    };
+
+    const [people, setPeople] = useState([
+      { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
+      { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
+      { name: 'Diya Kaimal', score: 56, location: 'Tech Square', time: '9:00pm' },
+    ]);
+
+    const [personName, setPersonName] = useState('');
+    const [showInputModal, setShowInputModal] = useState(false);  // Controls the modal visibility
+    const [showSOSModal, setShowSOSModal] = useState(false);  // Controls the SOS modal visibility
+
+    // Function to add a new person with a custom name
+    const addPerson = () => {
+      if (personName.trim()) {
+        const newPerson = {
+          name: personName,
+          score: getRandomNumber(0, 100),
+          location: getRandomLocation(),
+          time: getRandomTime(),
+        };
+        setPeople([...people, newPerson]);
+        setPersonName(''); // Reset input field
+        setShowInputModal(false); // Hide modal after adding person
+      }
+    };
+
+    // Function to get score color based on value
+    const getScoreColor = (score: number) => {
+      if (score <= 33) return 'red';
+      if (score <= 67) return 'orange';
+      return 'green';
+    };
+
+    return (
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Home</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent fullscreen>
+          <div className="iphone13">
+            <input className="search-bar" type="text" placeholder="Search..." />
+
+            <div className="map-container">
+              <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
+                  <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={ center }
+                  zoom={20}
+                  options={{
+                    zoomControl: true,
+                    mapTypeControl: false,
+                    fullscreenControl: false,
+                  }}
+                  onLoad={(loadedMap) => setMap(loadedMap)}
+                >
+                  {directionsResponse && (
+                    <DirectionsRenderer directions={directionsResponse} />
+                  )}
+                </GoogleMap>
+              </LoadScript>
+            </div>
+
+            <div className="controls">
+              <IonInput
+                placeholder="Enter destination"
+                value={destination}
+                onIonChange={(e) => setDestination(e.detail.value!)}
+                clearInput
+              />
+              <IonButton expand="block" onClick={calculateRoute}>
+                Get Route
+              </IonButton>
+
+              <IonButton expand="block" onClick={navigateToReportForm}>
+                Report an Event
+              </IonButton>
+            
+              <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
+                SOS
+              </IonButton>
+            </div>
+            
+            
+
+            <div className="people-section">
+              <div className="people-title">
+                People
+                <IonButton
+                  onClick={() => setShowInputModal(true)}  // Open name input modal
+                  style={{ backgroundColor: 'transparent', color: 'white', fontSize: '20px', padding: 0, marginLeft: 'auto' }} // Style for the "+" button
+                >
+                  +
+                </IonButton>
+              </div>
+              <hr />
+              {people.map((person, index) => (
+                <div className="person-row" key={index}>
+                  <div className="profile-pic"></div>
+                  <div className="person-info">
+                    <div className="person-name"><h4>{person.name}</h4></div>
+                    <div className="person-details">
+                      Safety Score:
+                      <span style={{ color: getScoreColor(person.score) }}> {person.score}</span>
+                      | Last Location: {person.location}
+                      | Last Marked: {person.time}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Name Input Modal */}
+            <IonModal isOpen={showInputModal} onDidDismiss={() => setShowInputModal(false)} className='small-modal'>
+              <IonContent>
+                <div style={{ padding: '10px', textAlign: 'center' }}>
+                  <IonIcon
+                    icon={closeCircleOutline}
+                    style={{ fontSize: '30px', cursor: 'pointer', position: 'absolute', top: '10px', right: '10px' }}
+                    onClick={() => setShowInputModal(false)}  // Close the modal
+                  />
+                  <IonInput
+                    value={personName}
+                    placeholder="Enter name"
+                    onIonChange={(e) => setPersonName(e.detail.value!)}
+                    style={{ marginBottom: '10px', padding: '5px', border: '1px solid gray', borderRadius: '5px', width: '80%' }}
+                  />
+                  <IonButton onClick={addPerson} size="small">Add</IonButton>
+                </div>
+              </IonContent>
+            </IonModal>
+
+            {/* SOS Modal */}
+            <IonModal isOpen={showSOSModal} onDidDismiss={() => setShowSOSModal(false)}>
+              <IonContent>
+                <h2>Emergency Contacts</h2>
+                <IonList>
+                  <IonItem button onClick={() => alert('Calling 911...')}>
+                    Call 911
+                  </IonItem>
+                  <IonItem button onClick={() => alert('Calling Emergency Contact 1...')}>
+                    Call Emergency Contact 1
+                  </IonItem>
+                  <IonItem button onClick={() => alert('Calling Emergency Contact 2...')}>
+                    Call Emergency Contact 2
+                  </IonItem>
+                </IonList>
+                <IonButton onClick={() => setShowSOSModal(false)}>Close</IonButton>
+              </IonContent>
+            </IonModal>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+>>>>>>> 98b2ea8786f0bf272a58150bf6020c5c2ba85e12
   };
 
   const getScoreColor = (score: number) => {
