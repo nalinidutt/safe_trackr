@@ -1,6 +1,7 @@
+import React, { useState, useCallback, useEffect } from 'react';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { useHistory } from 'react-router';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonModal, IonList, IonItem, IonIcon } from '@ionic/react';
-import React, { useState } from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { closeCircleOutline } from 'ionicons/icons'; // For the "X" icon
 import './styling/home.css';
 
@@ -13,6 +14,46 @@ const center = {
   lat: 33.7501,  // Latitude
   lng: -84.3885  // Longitude
 };
+
+/*
+const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
+
+const handleDirections = useCallback(() => {
+  if (window.google) {
+    const directionsService = new window.google.maps.DirectionsService();
+    directionsService.route(
+      {
+        origin: 'New York, NY',
+        destination: 'Los Angeles, CA',
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          setDirectionsResponse(result);
+        } else {
+          console.error(`Error fetching directions ${result}`);
+
+      }
+    );
+  }
+}, []);
+
+useEffect(() => {
+  handleDirections();
+}, [handleDirections]);
+*/
+
+function initMap(): void {
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer();
+
+  directionsRenderer.addListener("directions_changed", () => {
+    const directions = directionsRenderer.getDirections();
+
+    if (directions) {
+      computeTotalDistance(directions);
+    }
+  });
 
 // Function to generate random values
 const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -30,6 +71,12 @@ const getRandomLocation = () => {
 };
 
 const Home: React.FC = () => {
+  const history = useHistory();
+  
+  const navigateToReportForm = () => {
+    history.push('/report_form');
+  };
+
   const [people, setPeople] = useState([
     { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
     { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
@@ -82,7 +129,11 @@ const Home: React.FC = () => {
               />
             </LoadScript>
           </div>
-
+          
+          <IonButton expand="block" onClick={navigateToReportForm}>
+          Report an Event
+          </IonButton>
+        
           <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
             SOS
           </IonButton>
