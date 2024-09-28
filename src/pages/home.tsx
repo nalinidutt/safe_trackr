@@ -1,6 +1,7 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { useHistory } from 'react-router';
 import './styling/home.css';
 
 /*
@@ -107,6 +108,11 @@ function computeTotalDistance(result: google.maps.DirectionsResult) {
 }
 
 const Home: React.FC = () => {
+  const history = useHistory();
+  
+  const navigateToReportForm = () => {
+    history.push('/report_form');
+  };
   return (
     <IonPage>
       <IonHeader>
@@ -129,7 +135,9 @@ const Home: React.FC = () => {
               </GoogleMap>
             </LoadScript>
           </div>
-          }
+          <IonButton expand="block" onClick={navigateToReportForm}>
+          Report an Event
+          </IonButton>
           <div className="people-section">
             <div className="people-title">People</div>
             <hr />
