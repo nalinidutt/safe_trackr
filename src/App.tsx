@@ -52,31 +52,28 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/tab1">
+          <Route exact path="/home">
             <Home />
           </Route>
-          <Route exact path="/tab2">
+          <Route exact path="/favorites">
             <Favorites />
           </Route>
-          <Route path="/tab3">
+          <Route exact path="/resources">
             <Resources />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
+          <IonTabButton tab="home" href="/home">
             <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
+            <IonLabel>Home</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
+          <IonTabButton tab="favorites" href="/favorites">
             <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
+            <IonLabel>Favorites</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="resources" href="/resources">
             <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Tab 3</IonLabel>
+            <IonLabel>Resources</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
