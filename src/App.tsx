@@ -34,15 +34,7 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
+/* Ionic Dark Mode */
 import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
@@ -52,9 +44,14 @@ setupIonicReact();
 
 const App: React.FC = () => {
   const [locations, setLocations] = useState<{ name: string; address: string }[]>([]);
+  const [language, setLanguage] = useState<string>('en'); // Language state
 
   const addLocation = (name: string, address: string) => {
     setLocations([...locations, { name, address }]);
+  };
+
+  const changeLanguage = (newLanguage: string) => {
+    setLanguage(newLanguage);
   };
 
   return (
@@ -66,7 +63,7 @@ const App: React.FC = () => {
               <Home />
             </Route>
             <Route exact path="/favorites">
-              <Favorites locations={locations} addLocation={addLocation} />
+              <Favorites locations={locations} addLocation={addLocation} language={language} />
             </Route>
             <Route exact path="/report_form">
               <ReportForm />
