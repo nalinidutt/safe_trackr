@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
 import './styling/home.css';
 
 /*
@@ -17,6 +17,25 @@ const mapContainerStyle = {
 const center = {
   lat: 33.7501,  // Latitude
   lng: -84.3885  // Longitude
+};
+
+const [currentLocation, setCurrentLocation] = useState<google.maps.LatLng | null>(null);
+
+const getCurrentLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const currentLatLng = new google.maps.LatLng(latitude, longitude);
+        setCurrentLocation(currentLatLng);
+      },
+      (error) => {
+        console.error('Error getting location', error);
+      }
+    );
+  } else {
+    console.error('Geolocation is not supported by this browser.');
+  }
 };
 
 /*
@@ -47,6 +66,10 @@ useEffect(() => {
 }, [handleDirections]);
 */
 
+useEffect(() => {
+  getCurrentLocation(); // Fetch the user's current location when the component mounts
+}, []);
+
 function initMap(): void {
   const directionsService = new google.maps.DirectionsService();
   const directionsRenderer = new google.maps.DirectionsRenderer();
@@ -60,16 +83,16 @@ function initMap(): void {
   });
 
   displayRoute(
-    "Perth, WA",
-    "Sydney, NSW",
+    new google.maps.LatLng(33.77077999730102, -84.39188936601316),
+    new google.maps.LatLng(33.77437409297337, -84.39620235793099),
     directionsService,
     directionsRenderer
   );
 }
 
 function displayRoute(
-  origin: string,
-  destination: string,
+  origin: google.maps.LatLng,
+  destination: google.maps.LatLng,
   service: google.maps.DirectionsService,
   display: google.maps.DirectionsRenderer
 ) {
@@ -78,9 +101,10 @@ function displayRoute(
       origin: origin,
       destination: destination,
       waypoints: [
-        { location: "Adelaide, SA" },
-        { location: "Broken Hill, NSW" },
+        { location: new google.maps.LatLng(33.77297392970823, -84.39517238971182) },
+        { location: new google.maps.LatLng(33.773865756089805, -84.39481833813646) },
       ],
+      optimizeWaypoints: true,
       travelMode: google.maps.TravelMode.WALKING,
     })
     .then((result: google.maps.DirectionsResult) => {
@@ -104,6 +128,8 @@ function computeTotalDistance(result: google.maps.DirectionsResult) {
   }
 
   total = total / 1000;
+
+  return total;
 }
 
 const Home: React.FC = () => {
@@ -122,7 +148,7 @@ const Home: React.FC = () => {
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
-                center={center}
+                center={ currentLocation || center }
                 zoom={10}
               >
                 initMap();
