@@ -76,7 +76,7 @@ const Favorites: React.FC = () => {
                     }
 
                     .locations-container::-webkit-scrollbar-thumb,
-                    .cotacts-container::-webkit-scrollbar-thumb {
+                    .contacts-container::-webkit-scrollbar-thumb {
                         background-color: #3F7C85; /* Color of the scrollbar thumb */
                         border-radius: 10px; /* Rounded corners for the scrollbar */
                     }

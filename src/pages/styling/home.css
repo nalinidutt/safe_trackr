@@ -18,13 +18,12 @@
     border-radius: 5px;
     border: 1px solid #ccc;
     position: absolute; /* Position it absolutely */
-    top: 10px; /* Distance from top */
+    top: 100px; /* Distance from top */
     left: 10px; /* Center it */
   }
 
   .map-container {
-    height: calc(75%); /* 3/4 of the page height minus search bar */
-    margin: 60px 10px 0; /* Adjust margins to account for search bar */
+    height: calc(50%); /* 3/4 of the page height minus search bar */
     flex: 1;
   }
 
