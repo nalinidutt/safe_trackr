@@ -15,6 +15,7 @@ import Home from './pages/home';
 import Favorites from './pages/favorites';
 import Resources from './pages/resources';
 import Settings from './pages/settings';
+import ReportForm from './pages/report';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -58,6 +59,9 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/favorites">
             <Favorites />
+          </Route>
+          <Route exact path="/report_form">
+            <ReportForm />
           </Route>
           <Route exact path="/resources">
             <Resources />
