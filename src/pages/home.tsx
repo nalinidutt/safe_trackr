@@ -68,7 +68,6 @@ const Home: React.FC = () => {
   }, []);
 
   
-  const [currentLocation, setCurrentLocation] = useState<google.maps.LatLng | null>(null);
   const [people, setPeople] = useState<Person[]>([
     { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
     { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
@@ -87,7 +86,7 @@ const Home: React.FC = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const currentLatLng = new google.maps.LatLng(latitude, longitude);
+          const currentLatLng = { lat: latitude, lng: longitude };
           setCurrentLocation(currentLatLng);
         },
         (error) => {
@@ -201,7 +200,7 @@ const Home: React.FC = () => {
       });
       */
     }
-  };
+  });
 
   const getRandomNumber = (min: number, max: number) =>
     Math.floor(Math.random() * (max - min + 1)) + min;
@@ -218,46 +217,32 @@ const Home: React.FC = () => {
     return locations[getRandomNumber(0, locations.length - 1)];
   };
 
-<<<<<<< HEAD
+    
   const navigateToReportForm = () => {
     history.push('/report_form');
-=======
-    
-    const navigateToReportForm = () => {
-      history.push('/report_form');
-    };
+  };
 
-    const [people, setPeople] = useState([
-      { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
-      { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
-      { name: 'Diya Kaimal', score: 56, location: 'Tech Square', time: '9:00pm' },
-    ]);
+  // Function to add a new person with a custom name
+  const addPerson = () => {
+    if (personName.trim()) {
+      const newPerson: Person = {
+        name: personName,
+        score: getRandomNumber(0, 100),
+        location: getRandomLocation(),
+        time: getRandomTime(),
+      };
+      setPeople((prevPeople) => [...prevPeople, newPerson]);
+      setPersonName('');
+      setShowInputModal(false); // Hide modal after adding person
+    }
+  };
 
-    const [personName, setPersonName] = useState('');
-    const [showInputModal, setShowInputModal] = useState(false);  // Controls the modal visibility
-    const [showSOSModal, setShowSOSModal] = useState(false);  // Controls the SOS modal visibility
-
-    // Function to add a new person with a custom name
-    const addPerson = () => {
-      if (personName.trim()) {
-        const newPerson: Person = {
-          name: personName,
-          score: getRandomNumber(0, 100),
-          location: getRandomLocation(),
-          time: getRandomTime(),
-        };
-        setPeople((prevPeople) => [...prevPeople, newPerson]);
-        setPersonName('');
-        setShowInputModal(false); // Hide modal after adding person
-      }
-    };
-
-    // Function to get score color based on value
-    const getScoreColor = (score: number) => {
-      if (score <= 33) return 'red';
-      if (score <= 67) return 'orange';
-      return 'green';
-    };
+  // Function to get score color based on value
+  const getScoreColor = (score: number) => {
+    if (score <= 33) return 'red';
+    if (score <= 67) return 'orange';
+    return 'green';
+  };
 
     return (
       <IonPage>
@@ -434,7 +419,6 @@ const Home: React.FC = () => {
         </IonContent>
       </IonPage>
     );
->>>>>>> 98b2ea8786f0bf272a58150bf6020c5c2ba85e12
   };
 
   const getScoreColor = (score: number) => {
