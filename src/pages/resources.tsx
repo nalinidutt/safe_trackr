@@ -1,12 +1,14 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonItem, IonLabel, IonInput, IonButton } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonLabel, IonInput, IonButton } from '@ionic/react';
 import React, { useState } from 'react';
-import './styling/resources.css';
+import './styling/resources.css'; // Make sure this path is correct
 
 const Resources: React.FC = () => {
   const [showMessage, setShowMessage] = useState(false); // State for controlling the confirmation box
+  const [feedback, setFeedback] = useState(''); // State for the feedback input
 
   const handleSubmit = () => {
     setShowMessage(true); // Show the confirmation box on submit
+    setFeedback(''); // Clear the feedback input
   };
 
   const handleClose = () => {
@@ -21,9 +23,8 @@ const Resources: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <div className="iphone-wrapper">
-          <div className="section">
-            <h4> </h4>
+        <div className="iphone-wrapper"> {/* Apply the iphone-wrapper class */}
+          <div className="section"> {/* Apply the section class */}
             <h1 className="resources-title">Resources</h1>
 
             <p className="blue-background">Safety Tips and Guides</p>
@@ -40,10 +41,15 @@ const Resources: React.FC = () => {
             </ul>
 
             <p className="blue-background">Feedback</p>
-              <IonLabel className="feedback-label" position="floating">How can we improve our platform?</IonLabel>
-              <IonInput className="feedback-input" placeholder="Enter Feedback Here"></IonInput>
+            <IonLabel className="feedback-label" position="floating">How can we improve our platform?</IonLabel>
+            <IonInput 
+              className="custom-input feedback-input" // Apply custom-input class for styling
+              placeholder="Enter Feedback Here"
+              value={feedback} // Bind the input value to the feedback state
+              onIonChange={(e) => setFeedback(e.detail.value!)} // Update state on input change
+            />
 
-            <IonButton expand="block" className="submit-button" onClick={handleSubmit}>Submit</IonButton>
+            <IonButton expand="block" className="add-button submit-button" onClick={handleSubmit}>Submit</IonButton> {/* Apply add-button class */}
 
             {/* Confirmation Overlay and Box */}
             {showMessage && (

@@ -16,6 +16,7 @@ import Favorites from './pages/favorites';
 import Resources from './pages/resources';
 import Settings from './pages/settings';
 import ReportForm from './pages/report';
+import React, { useState } from 'react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -49,48 +50,57 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/favorites">
-            <Favorites />
-          </Route>
-          <Route exact path="/report_form">
-            <ReportForm />
-          </Route>
-          <Route exact path="/resources">
-            <Resources />
-          </Route>
-          <Route exact path="/settings">
-            <Settings />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="home" href="/home">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Home</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="favorites" href="/favorites">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Favorites</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="resources" href="/resources">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Resources</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="settings" href="/settings">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Settings</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const [locations, setLocations] = useState<{ name: string; address: string }[]>([]);
+
+  const addLocation = (name: string, address: string) => {
+    setLocations([...locations, { name, address }]);
+  };
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route exact path="/home">
+              <Home />
+            </Route>
+            <Route exact path="/favorites">
+              <Favorites locations={locations} addLocation={addLocation} />
+            </Route>
+            <Route exact path="/report_form">
+              <ReportForm />
+            </Route>
+            <Route exact path="/resources">
+              <Resources />
+            </Route>
+            <Route exact path="/settings">
+              <Settings locations={locations} addLocation={addLocation} />
+            </Route>
+            <Redirect exact from="/" to="/home" />
+          </IonRouterOutlet>
+          <IonTabBar slot="bottom">
+            <IonTabButton tab="home" href="/home">
+              <IonIcon aria-hidden="true" icon={triangle} />
+              <IonLabel>Home</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="favorites" href="/favorites">
+              <IonIcon aria-hidden="true" icon={ellipse} />
+              <IonLabel>Favorites</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="resources" href="/resources">
+              <IonIcon aria-hidden="true" icon={square} />
+              <IonLabel>Resources</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="settings" href="/settings">
+              <IonIcon aria-hidden="true" icon={square} />
+              <IonLabel>Settings</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;

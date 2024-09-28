@@ -16,20 +16,22 @@ import {
 } from '@ionic/react';
 import './styling/settings.css';
 
-const Settings: React.FC = () => {
+interface SettingsProps {
+  locations: { name: string; address: string }[];
+  addLocation: (name: string, address: string) => void;
+}
+
+const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [locationName, setLocationName] = useState('');
   const [locationAddress, setLocationAddress] = useState('');
-  const [locations, setLocations] = useState<{ name: string; address: string }[]>([]);
 
   const handleAddLocation = () => {
-    if (locationName && locationAddress) {
-      setLocations([...locations, { name: locationName, address: locationAddress }]);
-      setLocationName('');
-      setLocationAddress('');
-    }
+    addLocation(locationName, locationAddress);
+    setLocationName('');
+    setLocationAddress('');
   };
 
   const renderModalContent = () => {
@@ -38,7 +40,7 @@ const Settings: React.FC = () => {
         return (
           <div>
             <IonItem>
-              <IonLabel>Maps</IonLabel>
+              <IonLabel>Highways</IonLabel>
               <IonToggle />
             </IonItem>
             <IonItem>
@@ -67,17 +69,6 @@ const Settings: React.FC = () => {
       case 'Saved Locations':
         return (
           <div>
-            <IonInput
-              value={locationName}
-              placeholder="Location Name"
-              onIonChange={(e) => setLocationName(e.detail.value!)}
-            />
-            <IonInput
-              value={locationAddress}
-              placeholder="Location Address"
-              onIonChange={(e) => setLocationAddress(e.detail.value!)}
-            />
-            <IonButton onClick={handleAddLocation}>Add Location</IonButton>
             <ul>
               {locations.map((loc, index) => (
                 <li key={index}>{`${loc.name}, ${loc.address}`}</li>
@@ -142,7 +133,6 @@ const Settings: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
         <div className="iphone-wrapper">
           <div className="section">
             <h1 className="resources-title">Settings</h1>
@@ -182,6 +172,12 @@ const Settings: React.FC = () => {
             <IonItem button onClick={() => { setSelectedOption('Help & Support'); setModalOpen(true); }}>
               <IonLabel>Help & Support</IonLabel>
             </IonItem>
+          </div>
+
+          {/* Buttons at the bottom within the iPhone screen */}
+          <div className="button-container">
+            <IonButton expand="full" className="delete-button">Connect Devices</IonButton>
+            <IonButton expand="full" color="danger" className="delete-button">Delete Account</IonButton>
           </div>
         </div>
 

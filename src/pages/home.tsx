@@ -7,7 +7,7 @@ import './styling/home.css';
 
 const mapContainerStyle = {
   width: '100%',
-  height: '100%', // Full height to ensure it takes up the remaining space
+  height: '90%', // Full height to ensure it takes up the remaining space
 };
 
 const center = {
