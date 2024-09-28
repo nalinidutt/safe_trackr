@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonLabel, IonSelect, IonSelectOption, IonItem } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonLabel, IonSelect, IonSelectOption, IonItem, IonModal } from '@ionic/react';
 import axios from 'axios';
 
-const ReportForm: React.FC = () => {
+
+interface ReportFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ReportForm: React.FC <ReportFormProps> = ({ isOpen, onClose }) => {
   const [location, setLocation] = useState({ lat: '', long: '' });
   const [selectedCrime, setSelectedCrime] = useState<string>('');
   const [description, setDescription] = useState('');
@@ -49,10 +55,11 @@ const ReportForm: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <IonModal isOpen={isOpen} onDidDismiss={onClose}>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Report a Crime</IonTitle>
+          <IonButton slot="end" onClick={onClose}>Close</IonButton>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -79,7 +86,7 @@ const ReportForm: React.FC = () => {
               <IonSelectOption value="Robbery">Robbery</IonSelectOption>
               <IonSelectOption value="Intimidation">Intimidation</IonSelectOption>
               <IonSelectOption value="Murder">Murder</IonSelectOption>
-              <IonSelectOption value="Prostitution">Murder</IonSelectOption>
+              <IonSelectOption value="Prostitution">Prostitution</IonSelectOption>
               <IonSelectOption value="Kidnapping">Kidnapping</IonSelectOption>
               <IonSelectOption value="Pick-pocketing">Pick-pocketing</IonSelectOption>
               <IonSelectOption value="Human Trafficking">Human Trafficking</IonSelectOption>
@@ -105,7 +112,7 @@ const ReportForm: React.FC = () => {
           <IonButton expand="full" type="submit">Submit Report</IonButton>
         </form>
       </IonContent>
-    </IonPage>
+    </IonModal>
   );
 };
 
