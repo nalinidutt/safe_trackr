@@ -2,9 +2,12 @@ import sys
 import json
 from safety_score import safety_score
 
-def test_function (name):
-    print(name + " hello")
+def func():
+    input_data = json.loads(sys.stdin.read())
+    lat = input_data["lat"]
+    long = input_data["lng"]
+    time = input_data["time"]
 
-# data = json.loads(sys.stdin.read())["data"]
-# test_function(data)
-print(sys.stdin.read())
+    return safety_score(lat, long, time)
+
+print(func())

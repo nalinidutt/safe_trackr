@@ -54,15 +54,6 @@ const Home: React.FC = () => {
 
   const [crimes, setCrimes] = useState<Array<{ location: { lat: number; long: number }; crimeType: string; description: string }>>([]);
 
-  const findSafestRoute = async (routesList: any) => {
-    try {
-      const response = await axios.post('http://localhost:5000/process', routesList);
-      console.log(response.data.result);
-    } catch (error) {
-        console.error('Error:', error);
-    }
-  }
-
   const openReportModal = () => {
     setShowReportModal(true);
   };
@@ -110,29 +101,37 @@ const Home: React.FC = () => {
   };
 
   const calculateRoute = () => {
+    // Check if the current location and destination (selectedPlace) are valid
     if (!currentLocation || !selectedPlace) {
       alert("Please enter a destination.");
       return;
     }
-
+  
+    // Create a new DirectionsService instance to calculate the route
     const directionsService = new google.maps.DirectionsService();
+  
+    // Call the route function on the directionsService instance
     directionsService.route(
       {
-        origin: new google.maps.LatLng(currentLocation.lat, currentLocation.lng),
-        destination: new google.maps.LatLng(selectedPlace.lat, selectedPlace.lng),
-        travelMode: google.maps.TravelMode.WALKING, // You can change this to WALKING, BICYCLING, etc.
-        provideRouteAlternatives: true,
-        optimizeWaypoints: true,
+        origin: new google.maps.LatLng(currentLocation.lat, currentLocation.lng),  // Starting location
+        destination: new google.maps.LatLng(selectedPlace.lat, selectedPlace.lng),  // Destination
+        travelMode: google.maps.TravelMode.WALKING,  // Change to other modes if needed (e.g., DRIVING, BICYCLING)
+        provideRouteAlternatives: true,  // Allow multiple route options
+        optimizeWaypoints: true,  // Optimize the waypoints if any
       },
       (result, status) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          setDirectionsResponse(result);
+        // Check if the route was successfully calculated
+        if (status === "OK" && result) {
+          // If successful, pass the result to the findSafestRoute function
+          findSafestRoute(result.routes);
         } else {
+          // Handle errors in calculating the route
           alert('Could not calculate route: ' + status);
         }
       }
     );
   };
+  
 
   const handleAutocomplete = (input: string) => {
     if (input.length < 1) {
@@ -180,9 +179,13 @@ const Home: React.FC = () => {
   
     // Calculate the safety score based on the random points
     let totalScore = 0;
-    randomPoints.forEach(point => {
+    randomPoints.forEach(async point => {
       if (point instanceof google.maps.LatLng) {
-        totalScore += getSafetyScoreAtLocation(point.lat(), point.lng(), Date.now);
+        const response = await axios.post('http://localhost:5000/process', { "lat": point.lat(), "lng": point.lng(), "time":  Date.now });
+        console.log(response);
+
+        totalScore += response.data;
+        // totalScore += getSafetyScoreAtLocation(point.lat(), point.lng(), Date.now);
         //Needs to be fixed once python is implemented
       }
     });
@@ -307,7 +310,7 @@ const Home: React.FC = () => {
             />
             <IonButton 
               expand="block" 
-              onClick={findSafestRoute} 
+              onClick={calculateRoute} 
               style={{ width: '30%', marginTop: '20px' }} // Smaller width
             >
               Go
