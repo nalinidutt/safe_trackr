@@ -324,15 +324,15 @@ const Home: React.FC = () => {
   </LoadScript>
 </div>
 
-{/* Adjust the margin-top of this container to eliminate the gap */}
-<div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '-10px' }}>  
-  <IonButton expand="full" onClick={openReportModal} style={{ marginRight: '4px', marginTop: '0px', paddingTop: '0px' }}>
-    Report an Event
-  </IonButton>
-  <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ marginLeft: '4px', marginTop: '0px', paddingTop: '0px' }}>
-    SOS
-  </IonButton>
-</div>
+          {/* Adjust the margin-top of this container to eliminate the gap */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '-10px' }}>  
+            <IonButton expand="full" onClick={openReportModal} style={{ marginRight: '4px', marginTop: '0px', paddingTop: '0px' }}>
+              Report an Event
+            </IonButton>
+            <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ marginLeft: '4px', marginTop: '0px', paddingTop: '0px' }}>
+              SOS
+            </IonButton>
+          </div>
 
           <div className="people-section">
             <div className="people-title">
