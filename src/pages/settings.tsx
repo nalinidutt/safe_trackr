@@ -18,7 +18,14 @@ import './styling/settings.css';
 
 interface SettingsProps {
   locations: { name: string; address: string }[];
+  contacts: Contact[];
   addLocation: (name: string, address: string) => void;
+  language: string;
+}
+
+interface Contact {
+  name: string;
+  phone: string;
 }
 
 const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
@@ -65,6 +72,14 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
     // Additional logic for applying settings can be added here
   };
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDeleteAccount = () => {
+    // Add your delete account logic here
+    console.log('Account deleted');
+    setShowDeleteModal(false); // Close the modal after deletion
+  };
+
   const renderModalContent = () => {
     switch (selectedOption) {
       case 'Preferences':
@@ -97,16 +112,21 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
             </IonItem>
           </div>
         );
-      case 'Saved Locations':
-        return (
-          <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>
-            <ul>
-              {locations.map((loc, index) => (
-                <li key={index}>{`${loc.name}, ${loc.address}`}</li>
-              ))}
-            </ul>
-          </div>
-        );
+        case 'Saved Locations':
+          return (
+            <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>
+              <h2>Saved Locations</h2> {/* Header for the section */}
+              {locations.length > 0 ? ( // Conditional rendering
+                <ul>
+                  {locations.map((loc, index) => (
+                    <li key={index}>{`${loc.name}, ${loc.address}`}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No saved locations available.</p> // Message when there are no locations
+              )}
+            </div>
+          );        
         case 'Credentials':
           return (
             <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>
@@ -394,9 +414,31 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
 
           {/* Buttons at the bottom within the iPhone screen */}
           <div className="button-container">
-            <IonButton expand="full" className="delete-button">{language === 'es' ? 'Conectar Dispositivos' : 'Connect Devices'}</IonButton>
-            <IonButton expand="full" color="danger" className="delete-button">{language === 'es' ? 'Eliminar Cuenta' : 'Delete Account'}</IonButton>
+      <IonButton 
+        expand="full" 
+        color="danger" 
+        className="delete-button" 
+        onClick={() => setShowDeleteModal(true)} // Show modal on click
+      >
+        {language === 'es' ? 'Eliminar Cuenta' : 'Delete Account'}
+      </IonButton>
+
+      {/* Confirmation Modal */}
+      <IonModal isOpen={showDeleteModal} onDidDismiss={() => setShowDeleteModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Confirm Delete</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <p>Are you sure you want to delete your account?</p>
+            <IonButton expand="full" color="danger" onClick={handleDeleteAccount}>Yes</IonButton>
+            <IonButton expand="full" onClick={() => setShowDeleteModal(false)}>No</IonButton>
           </div>
+        </IonContent>
+      </IonModal>
+    </div>
         </div>
 
         <IonModal isOpen={modalOpen} onDidDismiss={() => setModalOpen(false)}>
