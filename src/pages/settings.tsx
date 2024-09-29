@@ -18,7 +18,14 @@ import './styling/settings.css';
 
 interface SettingsProps {
   locations: { name: string; address: string }[];
+  contacts: Contact[];
   addLocation: (name: string, address: string) => void;
+  language: string;
+}
+
+interface Contact {
+  name: string;
+  phone: string;
 }
 
 const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
@@ -105,16 +112,21 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
             </IonItem>
           </div>
         );
-      case 'Saved Locations':
-        return (
-          <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>
-            <ul>
-              {locations.map((loc, index) => (
-                <li key={index}>{`${loc.name}, ${loc.address}`}</li>
-              ))}
-            </ul>
-          </div>
-        );
+        case 'Saved Locations':
+          return (
+            <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>
+              <h2>Saved Locations</h2> {/* Header for the section */}
+              {locations.length > 0 ? ( // Conditional rendering
+                <ul>
+                  {locations.map((loc, index) => (
+                    <li key={index}>{`${loc.name}, ${loc.address}`}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No saved locations available.</p> // Message when there are no locations
+              )}
+            </div>
+          );        
         case 'Credentials':
           return (
             <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>

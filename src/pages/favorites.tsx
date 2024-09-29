@@ -1,18 +1,34 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonInput, IonButton } from '@ionic/react';
 import React, { useState } from 'react';
+import { useAppContext } from './AppContext';
 
-const Favorites: React.FC = () => {
-    const [locations, setLocations] = useState<{ name: string; address: string }[]>([]);
-    const [contacts, setContacts] = useState<{ name: string; phone: string }[]>([]);
-    
+// Define the interface for props
+interface Location {
+    name: string;
+    address: string;
+}
+
+interface Contact {
+    name: string;
+    phone: string;
+}
+
+interface FavoritesProps {
+    locations: Location[];
+    addLocation: (name: string, address: string) => void;
+    language: string; // Add this if you need to use the language prop
+}
+
+const Favorites: React.FC<FavoritesProps> = ({ locations, addLocation, language }) => {
     const [locationName, setLocationName] = useState('');
     const [locationAddress, setLocationAddress] = useState('');
     const [contactName, setContactName] = useState('');
     const [contactPhone, setContactPhone] = useState('');
+    const { contacts, addContact } = useAppContext(); // Assuming useAppContext is correctly set up
 
     const handleAddLocation = () => {
         if (locationName && locationAddress) {
-            setLocations([...locations, { name: locationName, address: locationAddress }]);
+            addLocation(locationName, locationAddress);
             setLocationName('');
             setLocationAddress('');
         }
@@ -20,7 +36,7 @@ const Favorites: React.FC = () => {
 
     const handleAddContact = () => {
         if (contactName && contactPhone) {
-            setContacts([...contacts, { name: contactName, phone: contactPhone }]);
+            addContact({ name: contactName, phone: contactPhone });
             setContactName('');
             setContactPhone('');
         }
@@ -53,40 +69,40 @@ const Favorites: React.FC = () => {
                     .blue-background {
                         background-color: #3F7C85;
                         color: white;
-                        padding: 8px; /* Smaller padding */
+                        padding: 8px;
                         border-radius: 5px;
                         text-align: center;
                         margin-bottom: 12px;
-                        font-size: 18px; /* Smaller font size */
+                        font-size: 18px;
                     }
 
                     .locations-container, .contacts-container {
                         display: flex;
                         flex-direction: column;
-                        gap: 8px; /* Smaller gap */
-                        max-height: 150px; /* Height for multiple cards to fit */
-                        overflow-y: auto; /* Enable vertical scrolling */
-                        padding-right: 5px; /* Padding for scroll bar */
-                        scrollbar-width: thin; /* For Firefox */
+                        gap: 8px;
+                        max-height: 150px;
+                        overflow-y: auto;
+                        padding-right: 5px;
+                        scrollbar-width: thin;
                     }
 
                     .locations-container::-webkit-scrollbar,
                     .contacts-container::-webkit-scrollbar {
-                        width: 8px; /* Width of the scrollbar */
+                        width: 8px;
                     }
 
                     .locations-container::-webkit-scrollbar-thumb,
                     .contacts-container::-webkit-scrollbar-thumb {
-                        background-color: #3F7C85; /* Color of the scrollbar thumb */
-                        border-radius: 10px; /* Rounded corners for the scrollbar */
+                        background-color: #3F7C85;
+                        border-radius: 10px;
                     }
 
                     .location-card, .contact-card {
-                        border: 2px solid #3F7C85; /* Blue border */
+                        border: 2px solid #3F7C85;
                         border-radius: 5px;
-                        padding: 12px; /* Comfortable padding */
+                        padding: 12px;
                         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-                        font-size: 14px; /* Smaller font size */
+                        font-size: 14px;
                     }
 
                     ion-input {
@@ -114,12 +130,16 @@ const Favorites: React.FC = () => {
                             placeholder="Location Name"
                             value={locationName}
                             onIonChange={(e) => setLocationName(e.detail.value!)}
+                            style={{ border: '1px solid gray', borderRadius: '4px' }}
                         />
+
                         <IonInput
                             placeholder="Address, City, State, Zip Code"
                             value={locationAddress}
                             onIonChange={(e) => setLocationAddress(e.detail.value!)}
+                            style={{ border: '1px solid gray', borderRadius: '4px' }}
                         />
+
                         <IonButton expand="block" className="add-button" onClick={handleAddLocation}>Add Location</IonButton>
                         <div className="locations-container">
                             {locations.map((location, index) => (
@@ -135,15 +155,19 @@ const Favorites: React.FC = () => {
                             placeholder="Contact Name"
                             value={contactName}
                             onIonChange={(e) => setContactName(e.detail.value!)}
+                            style={{ border: '1px solid gray', borderRadius: '4px' }}
                         />
+
                         <IonInput
                             placeholder="Phone Number"
                             value={contactPhone}
                             onIonChange={(e) => setContactPhone(e.detail.value!)}
+                            style={{ border: '1px solid gray', borderRadius: '4px' }}
                         />
+
                         <IonButton expand="block" className="add-button" onClick={handleAddContact}>Add Contact</IonButton>
                         <div className="contacts-container">
-                            {contacts.map((contact, index) => (
+                            {contacts.map((contact: Contact, index: number) => (
                                 <div key={index} className="contact-card">
                                     <h3>{contact.name}</h3>
                                     <p>{contact.phone}</p>

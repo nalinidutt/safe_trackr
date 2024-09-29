@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput, IonModal, IonList, IonItem, IonIcon } from '@ionic/react';
 import { closeCircleOutline } from 'ionicons/icons'; // For the "X" icon
 import './styling/home.css';
+import { useAppContext } from './AppContext';
 
 const mapContainerStyle = {
   width: '100%',
@@ -15,12 +16,18 @@ const center = {
   lng: -84.3885  // Longitude
 };
 
+interface Contact {
+  name: string;
+  phone: string;
+}
+
 const Home: React.FC = () => {
   const history = useHistory();
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [destination, setDestination] = useState<string>('');
   const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const { contacts } = useAppContext();
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -215,22 +222,31 @@ const Home: React.FC = () => {
           </IonModal>
 
           {/* SOS Modal */}
-          <IonModal isOpen={showSOSModal} onDidDismiss={() => setShowSOSModal(false)}>
-            <IonContent>
-              <h2>Emergency Contacts</h2>
-              <IonList>
-                <IonItem button onClick={() => alert('Calling Emergency Contact 1...')}>
-                  Call Emergency Contact 1
-                </IonItem>
-                <IonItem button onClick={() => alert('Calling Emergency Contact 2...')}>
-                  Call Emergency Contact 2
-                </IonItem>
-              </IonList>
-              <IonButton expand="full" onClick={() => setShowSOSModal(false)}>
-                Close
-              </IonButton>
-            </IonContent>
-          </IonModal>
+        <IonModal isOpen={showSOSModal} onDidDismiss={() => setShowSOSModal(false)}>
+          <IonContent>
+          <h2 style={{ marginLeft: '50px' }}>Emergency Contacts</h2>
+            <IonList>
+  {contacts.length > 0 || contacts.some(contact => contact.phone === '911') ? (
+    <>
+      {/* Default contact for 911 */}
+      <IonItem button onClick={() => alert(`Calling emergency services...`)}>
+        Call Emergency Services - 911
+      </IonItem>
+      {contacts.map((contact: Contact, index: number) => (
+        <IonItem key={index} button onClick={() => alert(`Calling ${contact.name}...`)}>
+          Call {contact.name} - {contact.phone}
+        </IonItem>
+      ))}
+    </>
+  ) : (
+    <IonItem>No emergency contacts available.</IonItem>
+  )}
+</IonList>
+            <IonButton expand="full" onClick={() => setShowSOSModal(false)}>
+              Close
+            </IonButton>
+          </IonContent>
+        </IonModal>
         </div>
       </IonContent>
     </IonPage>
