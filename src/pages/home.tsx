@@ -53,7 +53,6 @@ const Home: React.FC = () => {
 
   const [crimes, setCrimes] = useState<Array<{ location: { lat: number; long: number }; crimeType: string; description: string }>>([]);
 
-
   const fetchCrimes = async () => {
     try {
       const response = await axios.get('http://localhost:3000/reports'); 
@@ -121,7 +120,7 @@ const Home: React.FC = () => {
   };
 
   const handleAutocomplete = (input: string) => {
-    if (input.length < 3) {
+    if (input.length < 1) {
       setSuggestions([]);
       return;
     }
@@ -130,6 +129,8 @@ const Home: React.FC = () => {
     autocompleteService.getPlacePredictions({ input }, (predictions, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
         setSuggestions(predictions);
+      } else {
+        setSuggestions([]);
       }
     });
   };  
@@ -230,7 +231,10 @@ const Home: React.FC = () => {
             <IonInput
               placeholder="Enter destination"
               value={destination}
-              onIonChange={(e) => setDestination(e.detail.value!)}
+              onIonChange={(e) => {
+                setDestination(e.detail.value!);
+                handleAutocomplete(e.detail.value!);
+              }}
               clearInput
               style={{ flex: 1, marginRight: '8px', marginTop: '20px', marginLeft: '10px', width: '70%' }} // Shortened width
             />
@@ -242,6 +246,20 @@ const Home: React.FC = () => {
               Go
             </IonButton>
           </div>
+
+          {suggestions.length > 0 && (
+            <IonList className="suggestions-box">
+              {suggestions.map((suggestion, index) => (
+                <IonItem
+                  key={index}
+                  button
+                  onClick={() => handleSelectSuggestion(suggestion.place_id)} // Handle suggestion click
+                >
+                  {suggestion.description}
+                </IonItem>
+              ))}
+            </IonList>
+          )}
 
             <div className="map-container">
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo" libraries={['places']}>
