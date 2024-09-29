@@ -334,7 +334,7 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
             <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>
       <       p>
                 Reach out to us if you have any questions at +1 (469) 927 - 2095 or email us at 
-                <a href="mailto:kripa.kannan17@gmail.com"> kripa.kannan17@gmail.com</a>.
+                <a href="mailto:SafeTrackr@gmail.com"> SafeTrackr@gmail.com</a>.
               </p>
             </div>
           );

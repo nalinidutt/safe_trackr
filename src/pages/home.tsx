@@ -89,9 +89,8 @@ const Home: React.FC = () => {
   };
 
   const [people, setPeople] = useState([
-    { name: 'Kripa Kannan', score: 14, location: 'Home Park', time: '9:15pm' },
-    { name: 'Nalini Dutt', score: 56, location: 'Scheller', time: '8:47pm' },
-    { name: 'Diya Kaimal', score: 93, location: 'Tech Square', time: '9:00pm' },
+    { name: 'User 1', score: 14, location: 'Home Park', time: '9:15pm' },
+    { name: 'User 2', score: 56, location: 'Scheller', time: '8:47pm' },
   ]);
 
   const [personName, setPersonName] = useState('');
@@ -133,12 +132,12 @@ const Home: React.FC = () => {
               value={destination}
               onIonChange={(e) => setDestination(e.detail.value!)}
               clearInput
-              style={{ flex: 1, marginRight: '8px', marginTop: '50px', marginLeft: '10px', width: '70%' }} // Shortened width
+              style={{ flex: 1, marginRight: '8px', marginTop: '20px', marginLeft: '10px', width: '70%' }} // Shortened width
             />
             <IonButton 
               expand="block" 
               onClick={calculateRoute} 
-              style={{ width: '30%', marginTop: '50px' }} // Smaller width
+              style={{ width: '30%', marginTop: '20px' }} // Smaller width
             >
               Go
             </IonButton>
@@ -177,12 +176,6 @@ const Home: React.FC = () => {
           <div className="people-section">
             <div className="people-title">
               People
-              <IonButton
-                onClick={() => setShowInputModal(true)}  // Open name input modal
-                style={{ backgroundColor: 'transparent', color: 'white', fontSize: '20px', padding: 0, marginLeft: 'auto' }} // Style for the "+" button
-              >
-                +
-              </IonButton>
             </div>
             <hr />
             {people.map((person, index) => (

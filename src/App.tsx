@@ -17,6 +17,10 @@ import Resources from './pages/resources';
 import Settings from './pages/settings';
 import ReportForm from './pages/report';
 import React, { useState } from 'react';
+import { homeOutline } from 'ionicons/icons';
+import { heartOutline } from 'ionicons/icons';
+import { bookmarkOutline } from 'ionicons/icons';
+import { settingsOutline } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -78,19 +82,19 @@ const App: React.FC = () => {
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="home" href="/home">
-              <IonIcon aria-hidden="true" icon={triangle} />
+            <IonIcon aria-hidden="true" icon={homeOutline} />
               <IonLabel>Home</IonLabel>
             </IonTabButton>
             <IonTabButton tab="favorites" href="/favorites">
-              <IonIcon aria-hidden="true" icon={ellipse} />
+              <IonIcon aria-hidden="true" icon={heartOutline} />
               <IonLabel>Favorites</IonLabel>
             </IonTabButton>
             <IonTabButton tab="resources" href="/resources">
-              <IonIcon aria-hidden="true" icon={square} />
+              <IonIcon aria-hidden="true" icon={bookmarkOutline} />
               <IonLabel>Resources</IonLabel>
             </IonTabButton>
             <IonTabButton tab="settings" href="/settings">
-              <IonIcon aria-hidden="true" icon={square} />
+              <IonIcon aria-hidden="true" icon={settingsOutline} />
               <IonLabel>Settings</IonLabel>
             </IonTabButton>
           </IonTabBar>
