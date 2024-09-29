@@ -163,19 +163,58 @@ const Home: React.FC = () => {
     });
   };
 
-  /*
-  const calculateScoreForRoute = (route) => {
-
-  }
-
-  const findSafestRoute = (routesList) => {
-
-
-    for (let index = 0; index < routesList.routes.length; index++) {
-      const element = array[index];
+  
+  const calculateScoreForRoute = (route: google.maps.DirectionsRoute) => {
+    const points: google.maps.LatLng[] = [];
+  
+    // Extract latitude and longitude from each step of the route
+    route.legs.forEach(leg => {
+      leg.steps.forEach(step => {
+        points.push(step.start_location);
+        points.push(step.end_location);
+      });
+    });
+  
+    // Select 5 random points from the extracted points
+    const randomPoints = selectRandomPoints(points, 5);
+  
+    // Calculate the safety score based on the random points
+    let totalScore = 0;
+    randomPoints.forEach(point => {
+      if (point instanceof google.maps.LatLng) {
+        totalScore += getSafetyScoreAtLocation(point.lat(), point.lng(), Date.now);
+        //Needs to be fixed once python is implemented
+      }
+    });
+  
+    // Return the average score for the route
+    return totalScore / randomPoints.length;
+  };
+  
+  const selectRandomPoints = (points: google.maps.LatLng[], numPoints: number) => {
+    const selected = new Set();
+    
+    while (selected.size < numPoints) {
+      const randomIndex = Math.floor(Math.random() * points.length);
+      selected.add(points[randomIndex]);
     }
+  
+    return Array.from(selected);
+  };
+
+  const routesList = directionsResponse?.routes
+  const findSafestRoute = (routesList: google.maps.DirectionsRoute[]) => {
+    let safest = 0
+    let safestScore = calculateScoreForRoute(routesList[0])
+    for (let index = 1; index < routesList.length; index++) {
+      if (calculateScoreForRoute(routesList[index]) > safestScore) {
+        safest = index
+        safestScore = calculateScoreForRoute(routesList[index])
+      }
+    }
+    return routesList[safest];
   }
-  */
+ 
 
   // When a suggestion is selected
   const handleSelectSuggestion = (placeId: string) => {
