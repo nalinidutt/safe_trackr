@@ -191,99 +191,67 @@ const Home: React.FC = () => {
       console.log("Current location updated:", currentLocation); // Log the updated location
       const locationLatLng = new google.maps.LatLng(currentLocation.lat, currentLocation.lng);
       map.setCenter(locationLatLng); // Center the map on the current location
-
-      // Create the AdvancedMarkerElement to show the current location
-      /*
-      new google.maps.marker.AdvancedMarkerElement({
-        position: locationLatLng,
-        map: map,
-      });
-      */
     }
-  });
+  }, [currentLocation, map]);
 
-  const getRandomNumber = (min: number, max: number) =>
-    Math.floor(Math.random() * (max - min + 1)) + min;
-
-  const getRandomTime = () => {
-    const hour = getRandomNumber(1, 12);
-    const minutes = getRandomNumber(0, 59).toString().padStart(2, '0');
-    const period = getRandomNumber(0, 1) === 0 ? 'am' : 'pm';
-    return `${hour}:${minutes}${period}`;
-  };
-
-  const getRandomLocation = () => {
-    const locations = ['Home Park', 'Tech Square', 'Scheller', 'Piedmont Park', 'Tin Drum', 'Klaus Computing', 'College of Computing', 'Clough Commons'];
-    return locations[getRandomNumber(0, locations.length - 1)];
-  };
-
-    
   const navigateToReportForm = () => {
     history.push('/report_form');
   };
 
-  // Function to add a new person with a custom name
+  const [people, setPeople] = useState([
+    { name: 'User 1', score: 14, location: 'Home Park', time: '9:15pm' },
+    { name: 'User 2', score: 56, location: 'Scheller', time: '8:47pm' },
+  ]);
+
+  const [personName, setPersonName] = useState('');
+  const [showInputModal, setShowInputModal] = useState(false);  // Controls the modal visibility
+  const [showSOSModal, setShowSOSModal] = useState(false);  // Controls the SOS modal visibility
+
   const addPerson = () => {
     if (personName.trim()) {
-      const newPerson: Person = {
+      const newPerson = {
         name: personName,
-        score: getRandomNumber(0, 100),
-        location: getRandomLocation(),
-        time: getRandomTime(),
+        score: Math.floor(Math.random() * 101), // Score between 0-100
+        location: 'Random Location', // Replace with your random location logic
+        time: new Date().toLocaleTimeString(), // Current time
       };
-      setPeople((prevPeople) => [...prevPeople, newPerson]);
-      setPersonName('');
+      setPeople([...people, newPerson]);
+      setPersonName(''); // Reset input field
       setShowInputModal(false); // Hide modal after adding person
     }
   };
 
-  // Function to get score color based on value
   const getScoreColor = (score: number) => {
     if (score <= 33) return 'red';
     if (score <= 67) return 'orange';
     return 'green';
   };
 
-    return (
-      <IonPage>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Home</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent fullscreen>
-          <div className="iphone13">
-
-            {/* Places Autocomplete Search */}
-            <div className="search-bar">
-              <IonInput
-                value={destination}
-                onIonChange={(e) => {
-                  setDestination(e.detail.value!);
-                  handleAutocomplete(e.detail.value!);
-                }}
-                placeholder="Search..."
-                style={{ width: '100%', padding: '10px', marginTop: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-              />
-
-              {/* Render the autocomplete suggestions */}
-              <div className="suggestion-box">
-                {suggestions.map((suggestion) => (
-                  <div
-                    key={suggestion.place_id}
-                    onClick={() => handleSelectSuggestion(suggestion.place_id)}
-                    style={{
-                      padding: '10px',
-                      borderBottom: '1px solid #eee',
-                      cursor: 'pointer',
-                      backgroundColor: '#fff',
-                    }}
-                  >
-                    {suggestion.description}
-                  </div>
-                ))}
-              </div>
-            </div>
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Home</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent fullscreen>
+        <div className="iphone13">
+          <div className="map-controls" style={{ display: 'flex', alignItems: 'center' }}>
+            <IonInput
+              placeholder="Enter destination"
+              value={destination}
+              onIonChange={(e) => setDestination(e.detail.value!)}
+              clearInput
+              style={{ flex: 1, marginRight: '8px', marginTop: '20px', marginLeft: '10px', width: '70%' }} // Shortened width
+            />
+            <IonButton 
+              expand="block" 
+              onClick={calculateRoute} 
+              style={{ width: '30%', marginTop: '20px' }} // Smaller width
+            >
+              Go
+            </IonButton>
+          </div>
 
             <div className="map-container">
               <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo" libraries={['places']}>
@@ -330,233 +298,78 @@ const Home: React.FC = () => {
               </LoadScript>
             </div>
 
-            <div className="controls">
-              <IonInput
-                placeholder="Enter coordinates"
-                value={destination}
-                onIonChange={(e) => setDestination(e.detail.value!)}
-                clearInput
-              />
-              <IonButton expand="block" onClick={calculateRoute}>
-                Get Route
-              </IonButton>
-            
-              <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
-                SOS
-              </IonButton>
+          <div className="button-container" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+  <IonButton expand="full" onClick={navigateToReportForm} style={{ marginRight: '4px' }}>
+    Report an Event
+  </IonButton>
+
+  <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ marginLeft: '4px' }}>
+    SOS
+  </IonButton>
+</div>
+
+          <div className="people-section">
+            <div className="people-title">
+              People
             </div>
-
-            <IonButton expand="full" onClick={openModal}>Report a Crime</IonButton>
-        
-            <ReportForm isOpen={isModalOpen} onClose={closeModal} />
-
-            <div className="people-section">
-              <div className="people-title">
-                People
-                <IonButton
-                  onClick={() => setShowInputModal(true)}  // Open name input modal
-                  style={{ backgroundColor: 'transparent', color: 'white', fontSize: '20px', padding: 0, marginLeft: 'auto' }} // Style for the "+" button
-                >
-                  +
-                </IonButton>
-              </div>
-              <hr />
-              {people.map((person, index) => (
-                <div className="person-row" key={index}>
-                  <div className="profile-pic"></div>
-                  <div className="person-info">
-                    <div className="person-name"><h4>{person.name}</h4></div>
-                    <div className="person-details">
-                      Safety Score:
-                      <span style={{ color: getScoreColor(person.score) }}> {person.score}</span>
-                      | Last Location: {person.location}
-                      | Last Marked: {person.time}
-                    </div>
+            <hr />
+            {people.map((person, index) => (
+              <div className="person-row" key={index}>
+                <div className="profile-pic"></div>
+                <div className="person-info">
+                  <div className="person-name"><h4>{person.name}</h4></div>
+                  <div className="person-details">
+                    Safety Score:
+                    <span style={{ color: getScoreColor(person.score) }}> {person.score}</span>
+                    | Last Location: {person.location}
+                    | Last Marked: {person.time}
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Name Input Modal */}
-            <IonModal isOpen={showInputModal} onDidDismiss={() => setShowInputModal(false)} className='small-modal'>
-              <IonContent>
-                <div style={{ padding: '10px', textAlign: 'center' }}>
-                  <IonIcon
-                    icon={closeCircleOutline}
-                    style={{ fontSize: '30px', cursor: 'pointer', position: 'absolute', top: '10px', right: '10px' }}
-                    onClick={() => setShowInputModal(false)}  // Close the modal
-                  />
-                  <IonInput
-                    value={personName}
-                    placeholder="Enter name"
-                    onIonChange={(e) => setPersonName(e.detail.value!)}
-                    style={{ marginBottom: '10px', padding: '5px', border: '1px solid gray', borderRadius: '5px', width: '80%' }}
-                  />
-                  <IonButton onClick={addPerson} size="small">Add</IonButton>
-                </div>
-              </IonContent>
-            </IonModal>
-
-            {/* SOS Modal */}
-            <IonModal isOpen={showSOSModal} onDidDismiss={() => setShowSOSModal(false)}>
-              <IonContent>
-                <h2>Emergency Contacts</h2>
-                <IonList>
-                  <IonItem button onClick={() => alert('Calling 911...')}>
-                    Call 911
-                  </IonItem>
-                  <IonItem button onClick={() => alert('Calling Emergency Contact 1...')}>
-                    Call Emergency Contact 1
-                  </IonItem>
-                  <IonItem button onClick={() => alert('Calling Emergency Contact 2...')}>
-                    Call Emergency Contact 2
-                  </IonItem>
-                </IonList>
-                <IonButton onClick={() => setShowSOSModal(false)}>Close</IonButton>
-              </IonContent>
-            </IonModal>
-          </div>
-        </IonContent>
-      </IonPage>
-    );
-
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Home</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <div className="iphone13">
-          <input className="search-bar" type="text" placeholder="Search..." />
-
-          <div className="map-container">
-            <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo">
-              <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={currentLocation || center}
-                zoom={10}
-              />
-            </LoadScript>
+              </div>
+            ))}
           </div>
 
-          {/* Flex container for buttons, moved up slightly */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 0', marginTop: '-20px' }}>
-            <IonButton expand="full" onClick={navigateToReportForm} style={{ flex: 1, marginRight: '5px' }}>
-              Report an Event
-            </IonButton>
+          {/* Name Input Modal */}
+          <IonModal isOpen={showInputModal} onDidDismiss={() => setShowInputModal(false)} className='small-modal'>
+            <IonContent>
+              <div style={{ padding: '10px', textAlign: 'center' }}>
+                <IonIcon
+                  icon={closeCircleOutline}
+                  style={{ fontSize: '30px', cursor: 'pointer', position: 'absolute', top: '10px', right: '10px' }}
+                  onClick={() => setShowInputModal(false)}  // Close the modal
+                />
+                <IonInput
+                  value={personName}
+                  placeholder="Enter name"
+                  onIonChange={(e) => setPersonName(e.detail.value!)}
+                  style={{ marginBottom: '10px', padding: '5px', border: '1px solid gray', borderRadius: '5px', width: '80%' }}
+                />
+                <IonButton onClick={addPerson} size="small">Add</IonButton>
+              </div>
+            </IonContent>
+          </IonModal>
 
-            <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ flex: 1, marginLeft: '5px' }}>
-              SOS
-            </IonButton>
-          </div>
-
-          {/* Adjusting the People Section position */}
-          <PeopleSection people={people} getScoreColor={getScoreColor} setShowInputModal={setShowInputModal} />
-
-          <NameInputModal
-            isOpen={showInputModal}
-            onClose={() => setShowInputModal(false)}
-            personName={personName}
-            setPersonName={setPersonName}
-            addPerson={addPerson}
-          />
-
-          <SOSModal isOpen={showSOSModal} onClose={() => setShowSOSModal(false)} />
+          {/* SOS Modal */}
+          <IonModal isOpen={showSOSModal} onDidDismiss={() => setShowSOSModal(false)}>
+            <IonContent>
+              <h2>Emergency Contacts</h2>
+              <IonList>
+                <IonItem button onClick={() => alert('Calling Emergency Contact 1...')}>
+                  Call Emergency Contact 1
+                </IonItem>
+                <IonItem button onClick={() => alert('Calling Emergency Contact 2...')}>
+                  Call Emergency Contact 2
+                </IonItem>
+              </IonList>
+              <IonButton expand="full" onClick={() => setShowSOSModal(false)}>
+                Close
+              </IonButton>
+            </IonContent>
+          </IonModal>
         </div>
       </IonContent>
     </IonPage>
   );
 };
-
-const PeopleSection: React.FC<{ people: Person[]; getScoreColor: (score: number) => string; setShowInputModal: (show: boolean) => void; }> = ({ people, getScoreColor, setShowInputModal }) => (
-  <div className="people-section">
-    <div className="people-title">
-      People
-      <IonButton
-        onClick={() => setShowInputModal(true)}
-        style={{
-          backgroundColor: 'white', // Set background to white
-          color: 'gray',
-          fontSize: '20px',
-          padding: 0,
-          marginLeft: 'auto',
-          border: '1px solid gray', // Optional: add a border for better visibility
-        }}
-      >
-        +
-      </IonButton>
-    </div>
-    <hr />
-    {people.map((person, index) => (
-      <div className="person-row" key={index}>
-        <div className="profile-pic"></div>
-        <div className="person-info">
-          <div className="person-name">{person.name}</div>
-          <div className="person-details">
-            Safety Score:
-            <span style={{ color: getScoreColor(person.score) }}> {person.score}</span>
-            | Last Location: {person.location}
-            | Last Marked: {person.time}
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-const NameInputModal: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-  personName: string;
-  setPersonName: (name: string) => void;
-  addPerson: () => void;
-}> = ({ isOpen, onClose, personName, setPersonName, addPerson }) => (
-  <IonModal isOpen={isOpen} onDidDismiss={onClose} className='confirmation-overlay'>
-    <IonContent className='confirmation-box'>
-      <IonToolbar>
-        <IonTitle>Add Person</IonTitle>
-        <IonButton slot="end" onClick={onClose} fill="clear">
-          <IonIcon icon={closeCircleOutline} />
-        </IonButton>
-      </IonToolbar>
-      <div style={{ marginBottom: '10px', padding: '20px' }}>
-        <IonInput
-          value={personName}
-          placeholder="Enter name"
-          onIonChange={(e) => setPersonName(e.detail.value!)}
-          style={{
-            padding: '10px',
-            border: '1px solid gray',
-            borderRadius: '5px',
-            width: '100%',
-          }}
-        />
-      </div>
-      <IonButton expand="block" onClick={addPerson}>Add</IonButton>
-    </IonContent>
-  </IonModal>
-);
-
-const SOSModal: React.FC<{ isOpen: boolean; onClose: () => void; }> = ({ isOpen, onClose }) => (
-  <IonModal isOpen={isOpen} onDidDismiss={onClose}>
-    <IonContent>
-      <h2>Emergency Contacts</h2>
-      <IonList>
-        <IonItem button onClick={() => alert('Calling 911...')}>
-          Call 911
-        </IonItem>
-        <IonItem button onClick={() => alert('Calling Emergency Contact 1...')}>
-          Call Emergency Contact 1
-        </IonItem>
-        <IonItem button onClick={() => alert('Calling Emergency Contact 2...')}>
-          Call Emergency Contact 2
-        </IonItem>
-      </IonList>
-      <IonButton onClick={onClose}>Close</IonButton>
-    </IonContent>
-  </IonModal>
-);
 
 export default Home;

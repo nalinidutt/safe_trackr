@@ -39,14 +39,13 @@
     margin: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    position: relative;
-    top: 10px; /* Distance from top */
+    position: absolute; /* Position it absolutely */
+    top: 20px; /* Distance from top */
     left: 10px; /* Center it */
   }
 
   .map-container {
-    height: calc(60%); /* 3/4 of the page height minus search bar */
-    margin: 60px 10px 0; /* Adjust margins to account for search bar */
+    height: calc(50%); /* 3/4 of the page height minus search bar */
     flex: 1;
     position: relative;
   }
@@ -54,27 +53,29 @@
   .people-section {
     padding: 10px;
     border-top: 1px solid #ccc;
-    height: 25%; /* Set fixed height for scrollable area */
-    flex-shrink: 0;
+    height: 15%; /* Set fixed height for scrollable area */
+    flex-shrink: 1;
   }
 
   .people-title {
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 5px;
+    border-bottom: 2px solid #ccc; /* Line below the title */
+    padding-bottom: 0; /* Remove space below the title */
+    margin-bottom: 0; /* Ensure no margin below */
   }
 
   .person-row {
     display: flex;
     align-items: center;
-    margin: 5px 0;
+    font-size: 12px;
   }
 
   .profile-pic {
     width: 30px;
     height: 30px;
     background: #ccc; /* Gray circle for profile picture */
-    border-radius: 50%;
+    border-radius: 100%;
     margin-right: 10px;
   }
 
@@ -85,6 +86,7 @@
 
   .person-name h4 {
     font-weight: bold;
+    font-size: 16px;
   }
 
   .person-details {
