@@ -1,5 +1,6 @@
 import sys
 import json
+from safety_score import safety_score
 
 def test_function (name):
     print(name + " hello")

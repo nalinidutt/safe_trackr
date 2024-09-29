@@ -25,7 +25,7 @@ app.post('/process', (req, res) => {
         args: [inputData] // pass data to Python script
     };
 
-    PythonShell.run('test.py', options, (err, results) => {
+    PythonShell.run('calculate_route_score.py', options, (err, results) => {
         if (err) {
             return res.status(500).send(err);
         }

@@ -54,9 +54,9 @@ const Home: React.FC = () => {
 
   const [crimes, setCrimes] = useState<Array<{ location: { lat: number; long: number }; crimeType: string; description: string }>>([]);
 
-  const testing = async () => {
+  const findSafestRoute = async (routesList: any) => {
     try {
-      const response = await axios.post('http://localhost:5000/process', { 'datas': "boo" });
+      const response = await axios.post('http://localhost:5000/process', routesList);
       console.log(response.data.result);
     } catch (error) {
         console.error('Error:', error);
@@ -268,7 +268,7 @@ const Home: React.FC = () => {
             />
             <IonButton 
               expand="block" 
-              onClick={testing} 
+              onClick={findSafestRoute} 
               style={{ width: '30%', marginTop: '20px' }} // Smaller width
             >
               Go
