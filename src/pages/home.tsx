@@ -22,7 +22,7 @@ import axios from 'axios';
 
 const mapContainerStyle = {
   width: '100%',
-  height: '90%',
+  height: '80%',
 };
 
 const center = {
@@ -276,57 +276,60 @@ const Home: React.FC = () => {
             </IonList>
           )}
 
-            <div className="map-container">
-              <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo" libraries={['places']}>
-                  <GoogleMap
-                  mapContainerStyle={mapContainerStyle}
-                  center={ center }
-                  zoom={20}
-                  options={{
-                    zoomControl: true,
-                    mapTypeControl: false,
-                    fullscreenControl: false,
-                  }}
-                  onLoad={(loadedMap) => setMap(loadedMap)}
-                >
-                {crimes.map((crime, index) => (
-                  <MarkerF
-                    key={index}
-                    position={{ lat: crime.location.lat, lng: crime.location.long }}
-                    icon = '\media\yellow_MarkerA.png'
-                    onMouseOver={() => {
-                      const hoverTimeout = setTimeout(() => {
-                      setSelectedCrime({ lat: crime.location.lat, long: crime.location.long, crimeType: crime.crimeType, description: crime.description });
-                      }, 100);
-                      return () => clearTimeout(hoverTimeout);
-                    }}
-                    onMouseOut={() => setSelectedCrime(null)}
-                  />
-                  ))}
-                  {selectedCrime && (
-                  <InfoWindowF
-                    position={{ lat: selectedCrime.lat, lng: selectedCrime.long }}
-                    onCloseClick={() => setSelectedCrime(null)}
-                   >
-                    <div>
-                      <h4>{selectedCrime.crimeType}</h4>
-                      <p>{selectedCrime.description}</p>
-                    </div>
-                  </InfoWindowF>
-                )}
-                  {directionsResponse && (
-                    <DirectionsRenderer directions={directionsResponse} />
-                  )}
-                </GoogleMap>
-              </LoadScript>
-            </div>
+<div className="map-container" style={{ marginBottom: '0px', paddingBottom: '0px' }}>
+  <LoadScript googleMapsApiKey="AIzaSyCM36RA6FKHrmxRn9gvafknRc7738HwXNo" libraries={['places']}>
+    <GoogleMap
+      mapContainerStyle={{ ...mapContainerStyle, marginBottom: '0px', paddingBottom: '0px' }} // Ensure no extra bottom margin
+      center={center}
+      zoom={15}
+      options={{
+        zoomControl: true,
+        mapTypeControl: false,
+        fullscreenControl: false,
+      }}
+      onLoad={(loadedMap) => setMap(loadedMap)}
+    >
+      {crimes.map((crime, index) => (
+        <MarkerF
+          key={index}
+          position={{ lat: crime.location.lat, lng: crime.location.long }}
+          icon="\media\yellow_MarkerA.png"
+          onMouseOver={() => {
+            const hoverTimeout = setTimeout(() => {
+              setSelectedCrime({
+                lat: crime.location.lat,
+                long: crime.location.long,
+                crimeType: crime.crimeType,
+                description: crime.description,
+              });
+            }, 100);
+            return () => clearTimeout(hoverTimeout);
+          }}
+          onMouseOut={() => setSelectedCrime(null)}
+        />
+      ))}
+      {selectedCrime && (
+        <InfoWindowF
+          position={{ lat: selectedCrime.lat, lng: selectedCrime.long }}
+          onCloseClick={() => setSelectedCrime(null)}
+        >
+          <div>
+            <h4>{selectedCrime.crimeType}</h4>
+            <p>{selectedCrime.description}</p>
+          </div>
+        </InfoWindowF>
+      )}
+      {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
+    </GoogleMap>
+  </LoadScript>
+</div>
 
-          <div className="button-container" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-            <IonButton expand="full" onClick={openReportModal} style={{ marginRight: '4px' }}>
+          {/* Adjust the margin-top of this container to eliminate the gap */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '-10px' }}>  
+            <IonButton expand="full" onClick={openReportModal} style={{ marginRight: '4px', marginTop: '0px', paddingTop: '0px' }}>
               Report an Event
             </IonButton>
-
-            <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ marginLeft: '4px' }}>
+            <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ marginLeft: '4px', marginTop: '0px', paddingTop: '0px' }}>
               SOS
             </IonButton>
           </div>
@@ -365,7 +368,7 @@ const Home: React.FC = () => {
                   value={personName}
                   placeholder="Enter name"
                   onIonChange={(e) => setPersonName(e.detail.value!)}
-                  style={{ marginBottom: '10px', padding: '5px', border: '1px solid gray', borderRadius: '5px', width: '80%' }}
+                  style={{ border: '1px solid gray', borderRadius: '5px', width: '80%' }}
                 />
                 <IonButton onClick={addPerson} size="small">Add</IonButton>
               </div>
