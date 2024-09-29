@@ -33,6 +33,11 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
   const [authMessage, setAuthMessage] = useState(''); // State for authentication message
   const [shareInfoEnabled, setShareInfoEnabled] = useState(false); // State for share information toggle
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]); // State for selected options
+  const [showPasswordForm, setShowPasswordForm] = useState(false); // Controls form visibility
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState(''); // To show any validation errors
 
   const handleAddLocation = () => {
     addLocation(locationName, locationAddress);
@@ -102,14 +107,84 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
             </ul>
           </div>
         );
-      case 'Credentials':
-        return (
-          <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>
-            <IonLabel>{language === 'es' ? 'Nombre de usuario/correo' : 'Account Username/Email'}</IonLabel>
-            <IonInput value="user@example.com" readonly />
-            <IonButton>{language === 'es' ? 'Cambiar Contraseña' : 'Change Password'}</IonButton>
-          </div>
-        );
+        case 'Credentials':
+          return (
+            <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>
+              <IonLabel style={{ textDecoration: 'underline' }}>
+              {language === 'es' ? 'Nombre de usuario/correo' : 'Account Username/Email'}
+            </IonLabel>
+
+              <IonInput value="SafeTrackr@gmail.com" readonly />
+        
+              {/* Toggle visibility of the password change form */}
+              {!showPasswordForm && (
+                <IonButton onClick={() => setShowPasswordForm(true)}>
+                  {language === 'es' ? 'Cambiar Contraseña' : 'Change Password'}
+                </IonButton>
+              )}
+        
+              {/* Show the password change form when button is clicked */}
+              {showPasswordForm && (
+                <div>
+                  <IonItem>
+                    <IonLabel>{language === 'es' ? 'Contraseña Antigua' : 'Old Password'}</IonLabel>
+                    <IonInput
+                      type="password"
+                      value={oldPassword}
+                      onIonChange={(e) => setOldPassword(e.detail.value!)}
+                      placeholder={language === 'es' ? 'Ingrese su contraseña antigua' : 'Enter your old password'}
+                    />
+                  </IonItem>
+        
+                  <IonItem>
+                    <IonLabel>{language === 'es' ? 'Nueva Contraseña' : 'New Password'}</IonLabel>
+                    <IonInput
+                      type="password"
+                      value={newPassword}
+                      onIonChange={(e) => setNewPassword(e.detail.value!)}
+                      placeholder={language === 'es' ? 'Ingrese su nueva contraseña' : 'Enter your new password'}
+                    />
+                  </IonItem>
+        
+                  <IonItem>
+                    <IonLabel>{language === 'es' ? 'Confirmar Nueva Contraseña' : 'Confirm New Password'}</IonLabel>
+                    <IonInput
+                      type="password"
+                      value={confirmPassword}
+                      onIonChange={(e) => setConfirmPassword(e.detail.value!)}
+                      placeholder={language === 'es' ? 'Confirme su nueva contraseña' : 'Confirm your new password'}
+                    />
+                  </IonItem>
+        
+                  {/* Show any password validation errors */}
+                  {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+        
+                  <IonButton
+                    expand="full"
+                    onClick={() => {
+                      // Validate password inputs
+                      if (newPassword !== confirmPassword) {
+                        setPasswordError(language === 'es' ? 'Las contraseñas no coinciden' : 'Passwords do not match');
+                      } else if (!oldPassword || !newPassword) {
+                        setPasswordError(language === 'es' ? 'Por favor llene todos los campos' : 'Please fill in all fields');
+                      } else {
+                        setPasswordError('');
+                        // Handle password change logic here
+                        console.log('Old Password:', oldPassword);
+                        console.log('New Password:', newPassword);
+        
+                        // Simulate success and hide form after submitting
+                        setShowPasswordForm(false);
+                      }
+                    }}
+                    style={{ marginTop: '10px' }}
+                  >
+                    {language === 'es' ? 'Confirmar Cambio de Contraseña' : 'Confirm Password Change'}
+                  </IonButton>
+                </div>
+              )}
+            </div>
+          );
         case 'Privacy':
         return (
           <div style={{ marginLeft: '50px', marginRight: '50px', marginTop: '50px' }}>

@@ -164,13 +164,15 @@ const Home: React.FC = () => {
             </LoadScript>
           </div>
 
-          <IonButton expand="block" onClick={navigateToReportForm}>
-            Report an Event
-          </IonButton>
+          <div className="button-container" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+  <IonButton expand="full" onClick={navigateToReportForm} style={{ marginRight: '4px' }}>
+    Report an Event
+  </IonButton>
 
-          <IonButton expand="block" color="danger" onClick={() => setShowSOSModal(true)}>
-            SOS
-          </IonButton>
+  <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ marginLeft: '4px' }}>
+    SOS
+  </IonButton>
+</div>
 
           <div className="people-section">
             <div className="people-title">
