@@ -262,7 +262,7 @@ const Home: React.FC = () => {
                   setDestination(e.detail.value!);
                   handleAutocomplete(e.detail.value!);
                 }}
-                placeholder="Search for a place..."
+                placeholder="Search..."
                 style={{ width: '100%', padding: '10px', marginTop: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
               />
 
@@ -345,10 +345,10 @@ const Home: React.FC = () => {
                 SOS
               </IonButton>
             </div>
+
             <IonButton expand="full" onClick={openModal}>Report a Crime</IonButton>
         
             <ReportForm isOpen={isModalOpen} onClose={closeModal} />
-            
 
             <div className="people-section">
               <div className="people-title">
@@ -419,13 +419,6 @@ const Home: React.FC = () => {
         </IonContent>
       </IonPage>
     );
-  };
-
-  const getScoreColor = (score: number) => {
-    if (score <= 33) return 'red';
-    if (score <= 67) return 'orange';
-    return 'green';
-  };
 
   return (
     <IonPage>
