@@ -65,6 +65,14 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
     // Additional logic for applying settings can be added here
   };
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDeleteAccount = () => {
+    // Add your delete account logic here
+    console.log('Account deleted');
+    setShowDeleteModal(false); // Close the modal after deletion
+  };
+
   const renderModalContent = () => {
     switch (selectedOption) {
       case 'Preferences':
@@ -394,9 +402,31 @@ const Settings: React.FC<SettingsProps> = ({ locations, addLocation }) => {
 
           {/* Buttons at the bottom within the iPhone screen */}
           <div className="button-container">
-            <IonButton expand="full" className="delete-button">{language === 'es' ? 'Conectar Dispositivos' : 'Connect Devices'}</IonButton>
-            <IonButton expand="full" color="danger" className="delete-button">{language === 'es' ? 'Eliminar Cuenta' : 'Delete Account'}</IonButton>
+      <IonButton 
+        expand="full" 
+        color="danger" 
+        className="delete-button" 
+        onClick={() => setShowDeleteModal(true)} // Show modal on click
+      >
+        {language === 'es' ? 'Eliminar Cuenta' : 'Delete Account'}
+      </IonButton>
+
+      {/* Confirmation Modal */}
+      <IonModal isOpen={showDeleteModal} onDidDismiss={() => setShowDeleteModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Confirm Delete</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <p>Are you sure you want to delete your account?</p>
+            <IonButton expand="full" color="danger" onClick={handleDeleteAccount}>Yes</IonButton>
+            <IonButton expand="full" onClick={() => setShowDeleteModal(false)}>No</IonButton>
           </div>
+        </IonContent>
+      </IonModal>
+    </div>
         </div>
 
         <IonModal isOpen={modalOpen} onDidDismiss={() => setModalOpen(false)}>
