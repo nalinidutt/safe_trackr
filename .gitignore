@@ -23,6 +23,7 @@
 !/.vscode/extensions.json
 .idea
 .env
+.venv
 
 npm-debug.log*
 yarn-debug.log*

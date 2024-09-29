@@ -54,6 +54,15 @@ const Home: React.FC = () => {
 
   const [crimes, setCrimes] = useState<Array<{ location: { lat: number; long: number }; crimeType: string; description: string }>>([]);
 
+  const testing = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/process', { 'datas': "boo" });
+      console.log(response.data.result);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+  }
+
   const openReportModal = () => {
     setShowReportModal(true);
   };
@@ -112,10 +121,7 @@ const Home: React.FC = () => {
         origin: new google.maps.LatLng(currentLocation.lat, currentLocation.lng),
         destination: new google.maps.LatLng(selectedPlace.lat, selectedPlace.lng),
         travelMode: google.maps.TravelMode.WALKING, // You can change this to WALKING, BICYCLING, etc.
-        waypoints: [
-          { location: new google.maps.LatLng(33.77297392970823, -84.39517238971182) },
-          { location: new google.maps.LatLng(33.773865756089805, -84.39481833813646) },
-        ],
+        provideRouteAlternatives: true,
         optimizeWaypoints: true,
       },
       (result, status) => {
@@ -156,7 +162,20 @@ const Home: React.FC = () => {
       }
     });
   };
-  
+
+  /*
+  const calculateScoreForRoute = (route) => {
+
+  }
+
+  const findSafestRoute = (routesList) => {
+
+
+    for (let index = 0; index < routesList.routes.length; index++) {
+      const element = array[index];
+    }
+  }
+  */
 
   // When a suggestion is selected
   const handleSelectSuggestion = (placeId: string) => {
@@ -249,7 +268,7 @@ const Home: React.FC = () => {
             />
             <IonButton 
               expand="block" 
-              onClick={calculateRoute} 
+              onClick={testing} 
               style={{ width: '30%', marginTop: '20px' }} // Smaller width
             >
               Go
