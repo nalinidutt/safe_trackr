@@ -33,21 +33,12 @@
     background-color: #f0f0f0; /* Highlight on hover */
   }
 
-  .search-bar {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    position: absolute; /* Position it absolutely */
-    top: 20px; /* Distance from top */
-    left: 10px; /* Center it */
-  }
-
   .map-container {
-    height: calc(50%); /* 3/4 of the page height minus search bar */
+    height: calc(60%); /* 3/4 of the page height minus search bar */
     flex: 1;
-    position: relative;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 0;
   }
 
   .people-section {
