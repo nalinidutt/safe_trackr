@@ -47,11 +47,20 @@ const Home: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<{ lat: number; lng: number } | null>(null);
   const [selectedCrime, setSelectedCrime] = useState<{ lat: number; long: number; crimeType: string; description: string } | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
   const [crimes, setCrimes] = useState<Array<{ location: { lat: number; long: number }; crimeType: string; description: string }>>([]);
+
+  const openReportModal = () => {
+    setShowReportModal(true);
+  };
+
+  const closeReportModal = () => {
+    setShowReportModal(false);
+  };
 
   const fetchCrimes = async () => {
     try {
@@ -307,14 +316,14 @@ const Home: React.FC = () => {
             </div>
 
           <div className="button-container" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-  <IonButton expand="full" onClick={navigateToReportForm} style={{ marginRight: '4px' }}>
-    Report an Event
-  </IonButton>
+            <IonButton expand="full" onClick={openReportModal} style={{ marginRight: '4px' }}>
+              Report an Event
+            </IonButton>
 
-  <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ marginLeft: '4px' }}>
-    SOS
-  </IonButton>
-</div>
+            <IonButton expand="full" color="danger" onClick={() => setShowSOSModal(true)} style={{ marginLeft: '4px' }}>
+              SOS
+            </IonButton>
+          </div>
 
           <div className="people-section">
             <div className="people-title">
@@ -374,6 +383,8 @@ const Home: React.FC = () => {
               </IonButton>
             </IonContent>
           </IonModal>
+
+          <ReportForm isOpen={showReportModal} onClose={closeReportModal} />
         </div>
       </IonContent>
     </IonPage>
