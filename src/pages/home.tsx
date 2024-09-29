@@ -177,6 +177,12 @@ const Home: React.FC = () => {
           <div className="people-section">
             <div className="people-title">
               People
+              <IonButton
+                onClick={() => setShowInputModal(true)}  // Open name input modal
+                style={{ backgroundColor: 'transparent', color: 'white', fontSize: '20px', padding: 0, marginLeft: 'auto' }} // Style for the "+" button
+              >
+                +
+              </IonButton>
             </div>
             <hr />
             {people.map((person, index) => (
