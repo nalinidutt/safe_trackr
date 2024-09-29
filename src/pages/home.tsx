@@ -16,12 +16,9 @@ import {
 } from '@ionic/react';
 import { closeCircleOutline } from 'ionicons/icons';
 import './styling/home.css';
-<<<<<<< HEAD
 import { useAppContext } from './AppContext';
-=======
 import  ReportForm from './report';
 import axios from 'axios';
->>>>>>> 67ffb6b0de0e3223a8e5837803e0a6e9be64f78a
 
 const mapContainerStyle = {
   width: '100%',
@@ -33,18 +30,16 @@ const center = {
   lng: -84.3885,
 };
 
-<<<<<<< HEAD
 interface Contact {
   name: string;
   phone: string;
-=======
+}
 // Person type definition
 interface Person {
   name: string;
   score: number;
   location: string;
   time: string;
->>>>>>> 67ffb6b0de0e3223a8e5837803e0a6e9be64f78a
 }
 
 const Home: React.FC = () => {
@@ -53,9 +48,7 @@ const Home: React.FC = () => {
   const [destination, setDestination] = useState<string>('');
   const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-<<<<<<< HEAD
   const { contacts } = useAppContext();
-=======
   const [suggestions, setSuggestions] = useState<any[]>([]); // To hold the suggestions
   const [selectedPlace, setSelectedPlace] = useState<{ lat: number; lng: number } | null>(null);
   const [selectedCrime, setSelectedCrime] = useState<{ lat: number; long: number; crimeType: string; description: string } | null>(null);
@@ -95,7 +88,6 @@ const Home: React.FC = () => {
   useEffect(() => {
     getCurrentLocation();
   }, []);
->>>>>>> 67ffb6b0de0e3223a8e5837803e0a6e9be64f78a
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -381,7 +373,6 @@ const Home: React.FC = () => {
           </IonModal>
 
           {/* SOS Modal */}
-<<<<<<< HEAD
         <IonModal isOpen={showSOSModal} onDidDismiss={() => setShowSOSModal(false)}>
           <IonContent>
           <h2 style={{ marginLeft: '50px' }}>Emergency Contacts</h2>
@@ -407,26 +398,7 @@ const Home: React.FC = () => {
             </IonButton>
           </IonContent>
         </IonModal>
-=======
-          <IonModal isOpen={showSOSModal} onDidDismiss={() => setShowSOSModal(false)}>
-            <IonContent>
-              <h2>Emergency Contacts</h2>
-              <IonList>
-                <IonItem button onClick={() => alert('Calling Emergency Contact 1...')}>
-                  Call Emergency Contact 1
-                </IonItem>
-                <IonItem button onClick={() => alert('Calling Emergency Contact 2...')}>
-                  Call Emergency Contact 2
-                </IonItem>
-              </IonList>
-              <IonButton expand="full" onClick={() => setShowSOSModal(false)}>
-                Close
-              </IonButton>
-            </IonContent>
-          </IonModal>
-
           <ReportForm isOpen={showReportModal} onClose={closeReportModal} />
->>>>>>> 67ffb6b0de0e3223a8e5837803e0a6e9be64f78a
         </div>
       </IonContent>
     </IonPage>
