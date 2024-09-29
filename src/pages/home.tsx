@@ -67,12 +67,6 @@ const Home: React.FC = () => {
     fetchCrimes(); 
   }, []);
 
-  
-  const [people, setPeople] = useState<Person[]>([
-    { name: 'Kripa Kannan', score: 93, location: 'Home Park', time: '9:15pm' },
-    { name: 'Nalini Dutt', score: 14, location: 'Scheller', time: '8:47pm' },
-    { name: 'Diya Kaimal', score: 56, location: 'Tech Square', time: '9:00pm' },
-  ]);
   const [personName, setPersonName] = useState('');
   const [showInputModal, setShowInputModal] = useState(false);
   const [showSOSModal, setShowSOSModal] = useState(false);
@@ -202,10 +196,6 @@ const Home: React.FC = () => {
     { name: 'User 1', score: 14, location: 'Home Park', time: '9:15pm' },
     { name: 'User 2', score: 56, location: 'Scheller', time: '8:47pm' },
   ]);
-
-  const [personName, setPersonName] = useState('');
-  const [showInputModal, setShowInputModal] = useState(false);  // Controls the modal visibility
-  const [showSOSModal, setShowSOSModal] = useState(false);  // Controls the SOS modal visibility
 
   const addPerson = () => {
     if (personName.trim()) {
