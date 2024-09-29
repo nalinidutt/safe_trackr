@@ -48,6 +48,7 @@ const ReportForm: React.FC <ReportFormProps> = ({ isOpen, onClose }) => {
     try {
       const response = await axios.post('http://localhost:3000/report', reportData);
       alert(response.data.message);
+      onClose();
     } catch (error) {
       console.error('Error submitting report:', error);
       alert('Failed to submit report');

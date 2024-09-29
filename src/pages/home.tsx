@@ -112,10 +112,6 @@ const Home: React.FC = () => {
         origin: new google.maps.LatLng(currentLocation.lat, currentLocation.lng),
         destination: new google.maps.LatLng(selectedPlace.lat, selectedPlace.lng),
         travelMode: google.maps.TravelMode.WALKING, // You can change this to WALKING, BICYCLING, etc.
-        waypoints: [
-          { location: new google.maps.LatLng(33.77297392970823, -84.39517238971182) },
-          { location: new google.maps.LatLng(33.773865756089805, -84.39481833813646) },
-        ],
         optimizeWaypoints: true,
       },
       (result, status) => {
