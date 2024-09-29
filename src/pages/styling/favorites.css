@@ -48,6 +48,7 @@
     border: 2px solid #3F7C85; /* Blue border */
     border-radius: 5px;
     padding: 12px; /* Comfortable padding */
+    overflow-y: scroll;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     font-size: 14px; /* Smaller font size */
 }
